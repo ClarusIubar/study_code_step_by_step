@@ -1,19 +1,21 @@
+from dataclasses import dataclass
+
+@dataclass
 class Member:
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
+    name: str
+    age: int
 
-    # __str__은 객체를 print() 함수로 출력할 때 어떻게 보여줄지 정의하는 함수 
-    # 사람이 읽기 편한 형태로 리턴하도록 설정합니다.
-    def __str__(self):
-        return f"Member(name: {self.name}, age:{self.age})"
-    
-    # 리스트에 담기거나, 객체의 '본모습'을 표현할 때
-    def __repr__(self):
-        return f"Member(name='{self.name}', age={self.age})"
+    def __post_init__(self):
+        if not isinstance(self.name, str):
+            raise TypeError(f"유효하지 않은 이름입니다. 당신의 입력 : {self.name}")
+        if not 0 < self.age < 150:
+            raise ValueError(f"유효하지 않은 숫자 혹은 숫자범위입니다. 당신의 입력 : {self.age}")
+        self.name = self.name.strip()
 
-test = Member("공욱재", 24)
-print(test) # Member(name: 공욱재, age: 24)
+test1 = Member(" 공욱재   ", 25)
+# test2 = Member("공욱재", -5)
+test3 = Member(["공욱재"], 25)
 
-members = [test] # test 인스턴스를 단순히 리스트로 감싸서 테스트
-print(members) # [Member(name='공욱재', age=24)]
+print(test1) # Member(name='공욱재', age=25)
+# print(test2) # ValueError: 유효하지 않은 숫자 혹은 숫자범위입니다. 당신의 입력 : -5
+print(test3) # TypeError: 유효하지 않은 이름입니다. 당신의 입력 : ['공욱재']
