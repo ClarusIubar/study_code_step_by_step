@@ -232,8 +232,8 @@ def damage_monster(monster, dmg):
         GAME["player"]["loc"] += 50
         write_log(f"DEBUGGED: {dmg:.0f} Damage!", "#7ee787")
 
-def write_log(msg, color):
-    canvas.itemconfigure(log_text, text=f"> {msg}", fill=color)
+def write_log(message, color):
+    canvas.itemconfigure(log_text, text=f"> {message}", fill=color)
 
 def game_loop():
     if GAME["state"] == "PLAYING":
@@ -291,8 +291,8 @@ def game_loop():
         mp_ratio = GAME["player"]["mp"] / GAME["player"]["max_mp"]
         canvas.coords(stack_bar, 120, 755, 120 + (300 * max(0, mp_ratio)), 770)
         
-        status_msg = f"LOC(EXP): {GAME['player']['loc']} | PROCESSES: {len(GAME['monsters'])}"
-        canvas.itemconfigure(status_text, text=status_msg)
+        status_message = f"LOC(EXP): {GAME['player']['loc']} | PROCESSES: {len(GAME['monsters'])}"
+        canvas.itemconfigure(status_text, text=status_message)
 
     root.after(16, game_loop)
 
