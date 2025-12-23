@@ -18,3 +18,4 @@ try:
     print(Member("    공욱재  ", 25)) # Member(name='공욱재', age=25)
 except Exception as e:
     print(f"올바른 데이터 형식이 아닙니다. {e}")
+
