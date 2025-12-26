@@ -19,7 +19,7 @@ class Board():
     def update_board(self, content):
         # 어떤 파일을 업데이터 할 건지 정하고, 내용을 추가하게 할래.
         # 매개변수에 파일인지 내용인지 구분하게 해서 헷갈리지 않게 할래.
-        return open (self.file_name, 'a', encoding='utf-8').write(content)
+        return open (self.file_name, 'a', encoding='utf-8').write(content + "\n")
 
     def delete_board(self):
         # 어떤 것을 삭제할 건지 정하고, 그 파일을 삭제하게 할래.
@@ -32,10 +32,10 @@ if __name__ == "__main__":
 
     # 파일 생성 및 초기화
     board = Board("board.txt")
-    board.create_board() # 그냥 빈 파일 생성
+    # board.create_board() # 그냥 빈 파일 생성
 
-    # msg = input("메세지를 입력하세요: ")
-    # board.update_board(msg + "\n")
+    msg = input("메세지를 입력하세요: ")
+    board.update_board(msg)
 
     # print(board.read_board()) # 파일 읽기
 
