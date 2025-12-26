@@ -14,12 +14,14 @@ class Board():
             open (self.file_name, 'w', encoding='utf-8').close()
 
     # * 선택한 파일 읽기
-    def read_board(self, file_name):
-        if not os.path.exists(file_name):  
+    def read_board(self, file_name=None):
+        target_file = file_name if file_name is not None else self.file_name
+
+        if not os.path.exists(target_file):  
             print("파일이 존재하지 않습니다.")
             return
         else:
-            text = open (file_name, 'r', encoding='utf-8').read().strip()
+            text = open(target_file, 'r', encoding='utf-8').read().strip()
             print(text)
 
     # * 선택한 파일에 글 추가하기
@@ -46,10 +48,10 @@ if __name__ == "__main__":
     board = Board("board.txt")
     # board.create_board() # 그냥 빈 파일 생성
 
-    msg = input("메세지를 입력하세요: ")
-    board.update_board(msg)
-    board.update_board(msg, "test.txt")
+    # msg = input("메세지를 입력하세요: ")
+    # board.update_board(msg)
+    # board.update_board(msg, "test.txt")
 
-    # board.read_board("board.txt") # 파일 읽기
+    board.read_board() # 파일 읽기
 
     # board.delete_board("test.txt") # 파일 삭제
