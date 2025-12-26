@@ -12,9 +12,13 @@ class Board():
         else:
             open (self.file_name, 'w', encoding='utf-8').close()
 
-    def read_board(self):
-        # print()같은 것을 쓰지 않으면, 내용이 불러들어오지 않으니까 메서드 내에서 동작하게 하고 싶어.
-        return open (self.file_name, 'r', encoding='utf-8').read()
+    def read_board(self, file_name):
+        if not os.path.exists(file_name):  
+            print("파일이 존재하지 않습니다.")
+            return
+        else:
+            text = open (file_name, 'r', encoding='utf-8').read().strip()
+            print(text)
 
     def update_board(self, content):
         return open (self.file_name, 'a', encoding='utf-8').write(content + "\n")
@@ -34,6 +38,6 @@ if __name__ == "__main__":
     # msg = input("메세지를 입력하세요: ")
     # board.update_board(msg)
 
-    # print(board.read_board()) # 파일 읽기
+    board.read_board("board.txt") # 파일 읽기
 
-    board.delete_board("test.txt") # 파일 삭제
+    # board.delete_board("test.txt") # 파일 삭제
