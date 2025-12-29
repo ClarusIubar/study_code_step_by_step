@@ -25,7 +25,6 @@ canvas.pack()
 ball = canvas.create_oval(40, 40, 80, 80, fill=FILL_OVAL)
 # canvas.create_text(300, 350, text=TEXT, font=FONT, fill=FILL_TEXT)
 
-
 def move_loop():
     global VELOCITY_X, VELOCITY_Y
     # 볼 자체의 좌표
