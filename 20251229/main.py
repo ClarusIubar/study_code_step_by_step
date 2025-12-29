@@ -1,9 +1,7 @@
-class Hello_Series:
-    def insa():
-        print("안녕?")
-
-    def jalga():
-        print("잘가!")
-
-Hello_Series.insa()
-Hello_Series.jalga()
+display = [
+    ["#ffffff", "#000000", "#ff0000", "#00ff00", "#0000ff"],
+    ["#ffff00", "#00ffff", "#ff00ff", "#c0c0c0", "#808080"],
+    ["#800000", "#808000", "#008000", "#800080", "#008080"],
+    ["#000080", "#ffa500", "#f0f8ff", "#faebd7", "#7fffd4"],
+    ["#f0ffff", "#f5f5dc", "#ffe4c4", "#000000", "#ff4500"]  
+]
