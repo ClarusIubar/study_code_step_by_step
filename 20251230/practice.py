@@ -7,12 +7,7 @@ COLOR = "white"
 TITLE = "킨터를 가지고 놀래요."
 TEXT = "안녕하세요."
 FONT = ("Ariel",15)
-FILL_RECT = "blue"
-FILL_OVAL = "yellow"
-FILL_TEXT = "black"
 OUTLINE = "black" # not used
-VELOCITY_X = 5
-VELOCITY_Y = 10
 
 # basic structure
 root = tk.Tk()
@@ -20,15 +15,28 @@ root.title(TITLE)
 canvas = tk.Canvas(root, width=WIDTH, height=HEIGHT, bg=COLOR)
 canvas.pack()
 
-# object generate
-# canvas.create_rectangle(50, 50, 150, 150, fill=FILL_RECT)
-ball = canvas.create_oval(40, 40, 80, 80, fill=FILL_OVAL)
-# canvas.create_text(300, 350, text=TEXT, font=FONT, fill=FILL_TEXT)
+class Ball:
+    def __init__(self, x1, y1, x2, y2, fill):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        self.fill = fill
+    
+    def get_coords(self):
+        return (self.x1, self.y1, self.x2, self.y2)
 
-def move_loop():
+
+ball = Ball(40, 40, 80, 80, "Yellow")
+# 추상적으로는 볼이라는 객체를 주면, 알아서 값이 전달될 것이라고 생각했지만,
+# args형태로 작성되어 있지 않아서 직접 전달값을 담아서 전달해야한다.
+
+deploy_1 = canvas.create_oval(*ball.get_coords(), fill=ball.fill) 
+
+def move_loop(object):
     global VELOCITY_X, VELOCITY_Y
     # 볼 자체의 좌표
-    x1, y1, x2, y2 = canvas.coords(ball)
+    x1, y1, x2, y2 = canvas.coords(object)
 
     # 좌우 벽 충돌 검사
     # 충돌시, x축 속도 반전
@@ -40,10 +48,10 @@ def move_loop():
     if y1 <= 0 or y2 >= HEIGHT:
         VELOCITY_Y = -VELOCITY_Y
     # ball 객체를 상수항만큼 이동
-    canvas.move(ball, VELOCITY_X, VELOCITY_Y)
+    canvas.move(object, VELOCITY_X, VELOCITY_Y)
     # 반복적으로 불러오기
     root.after(20, move_loop) # 단위 : 20ms
 
 # 4. 루프 시작
-move_loop()
+move_loop(deploy_1)
 root.mainloop()
