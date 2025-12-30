@@ -4,6 +4,14 @@ import tkinter as tk
 WIDTH, HEIGHT = 400, 400
 COLOR = "white"
 
+class App_Tk:
+    def __init__(self, title):
+        self.title = title
+        self.root = tk.Tk()
+        self.root.title(self.title)
+        self.canvas = tk.Canvas(self.root, width=WIDTH, height=HEIGHT, bg=COLOR)
+        self.canvas.pack()
+
 # ball object
 class Ball:
     def __init__(self, canvas, x1, y1, x2, y2, vx, vy, fill="yellow"):
@@ -30,26 +38,24 @@ class Ball:
 
         # next step : 볼끼리 부딪치면 팅겨나가게 하는 방법은?
 
-# tkinter 초기화
-root = tk.Tk()
-root.title("공이 살아 움직여요")
-canvas = tk.Canvas(root, width=WIDTH, height=HEIGHT, bg=COLOR)
-canvas.pack()
-
-# 볼 집합
-# next step : append를 일일히 하지 않도록 할 수는 없을까?
-balls = []
-ball_1 = Ball(canvas, 40, 40, 80, 80, 5, 10, "yellow")
-ball_2 = Ball(canvas, 120, 120, 160, 160, 8, 7, "blue")
-balls.append(ball_1)
-balls.append(ball_2)
-
 # 반복
 def move_loop():
     for ball in balls:
         ball.move() # 움직여
     root.after(20, move_loop) # 20ms마다, 계속
 
-# 루프 시작
-move_loop()
-root.mainloop()
+
+if __name__ == "__main__":
+
+    app = App_Tk("공이 움직여요")
+    canvas = app.canvas
+    root = app.root
+
+    balls = []
+    ball_1 = Ball(canvas, 40, 40, 80, 80, 5, 10, "yellow")
+    ball_2 = Ball(canvas, 120, 120, 160, 160, 8, 7, "blue")
+    balls.append(ball_1)
+    balls.append(ball_2)
+
+    move_loop()
+    root.mainloop()
