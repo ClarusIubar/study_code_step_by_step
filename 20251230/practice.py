@@ -1,8 +1,10 @@
 import tkinter as tk
 
+# canvas CONSTANT
 WIDTH, HEIGHT = 400, 400
 COLOR = "white"
 
+# ball object
 class Ball:
     def __init__(self, canvas, x1, y1, x2, y2, vx, vy, fill="yellow"):
         self.canvas = canvas
@@ -26,18 +28,23 @@ class Ball:
             
         self.canvas.coords(self.id, self.x1, self.y1, self.x2, self.y2)
 
+        # next step : 볼끼리 부딪치면 팅겨나가게 하는 방법은?
 
+# tkinter 초기화
 root = tk.Tk()
 root.title("공이 살아 움직여요")
 canvas = tk.Canvas(root, width=WIDTH, height=HEIGHT, bg=COLOR)
 canvas.pack()
 
+# 볼 집합
+# next step : append를 일일히 하지 않도록 할 수는 없을까?
 balls = []
 ball_1 = Ball(canvas, 40, 40, 80, 80, 5, 10, "yellow")
 ball_2 = Ball(canvas, 120, 120, 160, 160, 8, 7, "blue")
 balls.append(ball_1)
 balls.append(ball_2)
 
+# 반복
 def move_loop():
     for ball in balls:
         ball.move() # 움직여
