@@ -47,9 +47,9 @@ def move_loop():
 
 if __name__ == "__main__":
 
-    app = App_Tk("공이 움직여요")
-    canvas = app.canvas
-    root = app.root
+    app = App_Tk("공이 움직여요") # title까지 추상화
+    canvas = app.canvas # canvas
+    root = app.root # basic
 
     balls = []
     ball_1 = Ball(canvas, 40, 40, 80, 80, 5, 10, "yellow")
