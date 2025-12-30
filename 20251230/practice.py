@@ -1,57 +1,48 @@
 import tkinter as tk
 
-# constant
-WIDTH = 400
-HEIGHT = 400
+WIDTH, HEIGHT = 400, 400
 COLOR = "white"
-TITLE = "킨터를 가지고 놀래요."
-TEXT = "안녕하세요."
-FONT = ("Ariel",15)
-OUTLINE = "black" # not used
 
-# basic structure
+class Ball:
+    def __init__(self, canvas, x1, y1, x2, y2, vx, vy, fill="yellow"):
+        self.canvas = canvas
+        self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2
+        self.vx, self.vy = vx, vy
+        self.fill = fill
+        self.id = self.canvas.create_oval(self.x1, self.y1, self.x2, self.y2, fill=self.fill)
+
+    def move(self):
+        # 데이터(좌표) 갱신
+        self.x1 += self.vx
+        self.x2 += self.vx
+        self.y1 += self.vy
+        self.y2 += self.vy
+
+        # 캔버스에 닿으면, 속도 반전을 해서 튕겨 나가는 것처럼 보이게 한다.
+        if self.x1 <= 0 or self.x2 >= WIDTH:
+            self.vx = -self.vx
+        if self.y1 <= 0 or self.y2 >= HEIGHT:
+            self.vy = -self.vy
+            
+        self.canvas.coords(self.id, self.x1, self.y1, self.x2, self.y2)
+
+
 root = tk.Tk()
-root.title(TITLE)
+root.title("공이 살아 움직여요")
 canvas = tk.Canvas(root, width=WIDTH, height=HEIGHT, bg=COLOR)
 canvas.pack()
 
-class Ball:
-    def __init__(self, x1, y1, x2, y2, fill):
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
-        self.fill = fill
-    
-    def get_coords(self):
-        return (self.x1, self.y1, self.x2, self.y2)
+balls = []
+ball_1 = Ball(canvas, 40, 40, 80, 80, 5, 10, "yellow")
+ball_2 = Ball(canvas, 120, 120, 160, 160, 8, 7, "blue")
+balls.append(ball_1)
+balls.append(ball_2)
 
+def move_loop():
+    for ball in balls:
+        ball.move() # 움직여
+    root.after(20, move_loop) # 20ms마다, 계속
 
-ball = Ball(40, 40, 80, 80, "Yellow")
-# 추상적으로는 볼이라는 객체를 주면, 알아서 값이 전달될 것이라고 생각했지만,
-# args형태로 작성되어 있지 않아서 직접 전달값을 담아서 전달해야한다.
-
-deploy_1 = canvas.create_oval(*ball.get_coords(), fill=ball.fill) 
-
-def move_loop(object):
-    global VELOCITY_X, VELOCITY_Y
-    # 볼 자체의 좌표
-    x1, y1, x2, y2 = canvas.coords(object)
-
-    # 좌우 벽 충돌 검사
-    # 충돌시, x축 속도 반전
-    if x1 <= 0 or x2 >= WIDTH:
-        VELOCITY_X = -VELOCITY_X # 반전을 해야하기 때문에 명시적으로 변경해야함.
-
-    # 상하 벽 충돌 검사
-    # 충돌시, 속도 반전
-    if y1 <= 0 or y2 >= HEIGHT:
-        VELOCITY_Y = -VELOCITY_Y
-    # ball 객체를 상수항만큼 이동
-    canvas.move(object, VELOCITY_X, VELOCITY_Y)
-    # 반복적으로 불러오기
-    root.after(20, move_loop) # 단위 : 20ms
-
-# 4. 루프 시작
-move_loop(deploy_1)
+# 루프 시작
+move_loop()
 root.mainloop()
