@@ -1,23 +1,24 @@
 import tkinter as tk
 
+# init
 root = tk.Tk()
 
+# class
 class Test_Data:
     def __init__(self, label_text, pady_value):
         self.label_text = label_text
         self.pady_value = pady_value
+    
+    def create_label(self):
+        label = tk.Label(root, text=self.label_text)
+        label.pack(pady=self.pady_value)
 
+# instance
 test_data = Test_Data("Hello, Tkinter!", 10)
 
-label = tk.Label(root)
-
-def create_label(text, pady):
-    label = tk.Label(root, text=text)
-    label.pack(pady=pady)
-
+# make 'n'
 for _ in range(10):
-    create_label(test_data.label_text, test_data.pady_value)
+    test_data.create_label()
 
-label.pack(pady=test_data.pady_value)
-
+# generate window
 root.mainloop()
