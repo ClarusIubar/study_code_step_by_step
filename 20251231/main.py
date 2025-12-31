@@ -8,3 +8,5 @@ timestamp = now.timestamp()
 
 print(timestamp) # 1,767,153,516.3203
 
+# 시계, 캘린더
+# 시간을 쓰는 서비스의 관점 (시간-돈-비용-재미-중독)
