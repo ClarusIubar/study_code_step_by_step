@@ -30,7 +30,7 @@ class LottoApp:
         self.canvas.delete("ball")
         self.winners = []
         # 상단 밖에서 떨어지는 연출 (끼임 로직 수정으로 이제 정상 작동)
-        self.balls = [LottoBall(self.canvas, i, random.randint(50, 550), random.randint(-150, -30)) for i in range(1, 46)]
+        self.balls = [LottoBall(self.canvas, i, random.randint(50, 550), random.randint(-150, -30)) for i in range(1, 46)] # 랜덤 생성
         self.is_animating = True
         self.run_physics()
 
@@ -67,10 +67,10 @@ class LottoApp:
 
     def popup(self):
         # 팝업 생성 시 리스크 분산: 
-        # 1. numbers를 소팅해서 전달 (데이터 정합성)
+        # 1. 공의 숫자를 소팅해서 전달
         # 2. 저장 로직(callback)만 넘겨서 popup이 storage를 직접 참조하지 않게 함(DIP 원칙)
-        res = sorted(self.winners)
-        LottoResultPopup(self.root, res, self.storage.save)
+        selected_ball = sorted(self.winners)
+        LottoResultPopup(self.root, selected_ball, self.storage.save)
 
     def show_records(self):
         data = self.storage.get_random_5()
