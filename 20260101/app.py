@@ -1,16 +1,18 @@
 import tkinter as tk
 import math
 import random
-import lottoball
-import controller
-import storage
+from lottoball import LottoBall
+from controller import LottoController
+from storage import LottoStorage
+from record_popup import RecordViewPopup
+from result_popup import LottoResultPopup
 
 class LottoApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("이단아의 진짜 물리 6/45 CRUD")
+        self.root.title("생성, 조회마저도 `랜덤`인 이단 6/45 로또")
         self.root.geometry("600x650")
-        self.storage = storage.LottoStorage()
+        self.storage = LottoStorage()
 
         self.canvas = tk.Canvas(root, width=600, height=500, bg="white")
         self.canvas.pack(fill="both", expand=True)
@@ -19,7 +21,7 @@ class LottoApp:
         self.canvas.create_rectangle(0, self.win_y, 600, 500, fill="#FFD700", outline="")
         self.canvas.create_text(300, 475, text="WINNING ZONE", font=("Arial", 12, "bold"))
 
-        self.controller = controller.LottoController(root, self.start_draw, self.show_records)
+        self.controller = LottoController(root, self.start_draw, self.show_records)
         self.controller.pack(fill="x", side="bottom")
         self.balls = []; self.winners = []; self.is_animating = False
 
@@ -28,7 +30,7 @@ class LottoApp:
         self.canvas.delete("ball")
         self.winners = []
         # 상단 밖에서 떨어지는 연출 (끼임 로직 수정으로 이제 정상 작동)
-        self.balls = [lottoball.LottoBall(self.canvas, i, random.randint(50, 550), random.randint(-150, -30)) for i in range(1, 46)]
+        self.balls = [LottoBall(self.canvas, i, random.randint(50, 550), random.randint(-150, -30)) for i in range(1, 46)]
         self.is_animating = True
         self.run_physics()
 
@@ -64,19 +66,13 @@ class LottoApp:
             self.root.after(500, self.popup)
 
     def popup(self):
-        pop = tk.Toplevel(self.root); pop.title("결과"); pop.grab_set()
-        w, h = 300, 150
-        x = self.root.winfo_x() + (self.root.winfo_width()//2) - (w//2)
-        y = self.root.winfo_y() + (self.root.winfo_height()//2) - (h//2)
-        pop.geometry(f"{w}x{h}+{x}+{y}")
+        # 팝업 생성 시 리스크 분산: 
+        # 1. numbers를 소팅해서 전달 (데이터 정합성)
+        # 2. 저장 로직(callback)만 넘겨서 popup이 storage를 직접 참조하지 않게 함(DIP 원칙)
         res = sorted(self.winners)
-        tk.Label(pop, text=f"당첨 번호: {res}\n저장하시겠습니까?").pack(pady=20)
-        f = tk.Frame(pop); f.pack()
-        tk.Button(f, text="저장", width=10, command=lambda: [self.storage.save(res), pop.destroy()]).pack(side="left", padx=10)
-        tk.Button(f, text="삭제", width=10, command=pop.destroy).pack(side="right", padx=10)
+        LottoResultPopup(self.root, res, self.storage.save)
 
     def show_records(self):
+        # 로직(데이터 추출)과 표현(팝업 생성)을 명확히 분리
         data = self.storage.get_random_5()
-        v = tk.Toplevel(self.root); v.title("랜덤 5개")
-        if not data: tk.Label(v, text="데이터 없음", pady=50).pack(); return
-        for r in data: tk.Label(v, text=f"[{r['id']}] {r['nums']} ({r['time']})").pack(pady=5)
+        RecordViewPopup(self.root, data) # 이제 위치와 UI는 클래스가 알아서 함
