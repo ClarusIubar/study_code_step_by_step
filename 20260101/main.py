@@ -1,9 +1,8 @@
 import tkinter as tk
+from app import LottoApp
 
 if __name__ == "__main__":
 
     root = tk.Tk()
-    canvas = tk.Canvas()
-    canvas.pack()
-
+    app = LottoApp(root); 
     root.mainloop()
