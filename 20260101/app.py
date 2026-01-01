@@ -73,6 +73,5 @@ class LottoApp:
         LottoResultPopup(self.root, res, self.storage.save)
 
     def show_records(self):
-        # 로직(데이터 추출)과 표현(팝업 생성)을 명확히 분리
         data = self.storage.get_random_5()
-        RecordViewPopup(self.root, data) # 이제 위치와 UI는 클래스가 알아서 함
+        RecordViewPopup(self.root, data)

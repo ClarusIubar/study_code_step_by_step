@@ -1,8 +1,8 @@
 import tkinter as tk
 
 class LottoResultPopup(tk.Toplevel):
-    def __init__(self, parent, numbers, on_save):
-        super().__init__(parent)
+    def __init__(self, root, numbers, on_save):
+        super().__init__(root)
         # 1. 생성 즉시 화면에서 숨김 (번쩍거림 방지 핵심)
         self.withdraw() 
         
@@ -11,22 +11,22 @@ class LottoResultPopup(tk.Toplevel):
         self.on_save = on_save
 
         # 2. 위치 계산 및 UI 구성 (이때 창은 여전히 숨겨진 상태)
-        self._align_to_center(parent)
+        self._align_to_center(root)
         self._build_ui()
 
         # 3. 설정 완료 후 부모 위에 고정하고 화면에 표시
-        self.transient(parent)
+        self.transient(root)
         self.grab_set()
         self.deiconify() # 이제 완성된 상태로 '짠'하고 나타남
 
-    def _align_to_center(self, parent):
+    def _align_to_center(self, root):
         # 윈도우 크기 확정 및 렌더링 갱신
         self.update_idletasks()
         w, h = 300, 180
         
         # winfo_rootx()를 통해 부모의 실제 화면 좌표 정밀 획득
-        px, py = parent.winfo_rootx(), parent.winfo_rooty()
-        pw, ph = parent.winfo_width(), parent.winfo_height()
+        px, py = root.winfo_rootx(), root.winfo_rooty()
+        pw, ph = root.winfo_width(), root.winfo_height()
         
         x = px + (pw // 2) - (w // 2)
         y = py + (ph // 2) - (h // 2)
