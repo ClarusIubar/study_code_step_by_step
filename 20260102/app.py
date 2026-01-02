@@ -75,12 +75,20 @@ class LottoApp:
             self.root.after(15, self.run_physics) # 15ms마다 계속 물리엔진을 호출
         else: # 공이 6개가 골라지면,
             self.is_animating = False  # 볼 애니메이션을 중지. 
+            self.storage.save(self.winners) # * SAVE 선택된 공들을 저장
             self.root.after(500, self.pop_up) # 500ms이후에, 팝업을 띄운다. 
+            self.reset_game() # 초기화 상태로 전이
 
     def handle_winner(self, ball): 
         self.winners.append(ball.number) # 선택된 공의 번호를 append
         # 시각적 피드백: 선택된 공에 빨강 아웃라인
         self.canvas.itemconfig(ball.oval, outline="red", width=3)
+
+    def reset_game(self):
+        """상태 초기화(Reset): 다음 드로우를 위한 준비"""
+        self.winners = []
+        self.active_balls = []
+        self.canvas.delete("ball")
 
     def pop_up(self):
         # 결과 저장 및 팝업 표출 (기존 로직 활용)
