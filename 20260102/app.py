@@ -5,6 +5,8 @@ from physics import Physics_Core
 from ball import LottoBall
 from storage import LottoStorage
 from controller import Controller
+from result_popup import LottoResultPopup
+from record_popup import RecordViewPopup
 
 class LottoApp:
     def __init__(self, root):
@@ -26,7 +28,9 @@ class LottoApp:
         # 하단에 닿는 영역(사각형) -> 닿으면 공이 선택되도록 영역
         
         # 4. 버튼(하단) : Controller를 호출
-        self.controller = Controller(root, on_draw=self.start_draw)
+        self.controller = Controller(root, on_draw=self.start_draw, on_read=self.show_records) 
+                                            # 버튼이 늘어나면, 여기도 매개변수를 추가해줘야함. 
+                                            # 여러 곳에서 수정해야 하는 문제 아닌가?
         self.controller.pack(fill="x", side="bottom")
 
         # 5. 상태 관리 리스트
@@ -76,7 +80,7 @@ class LottoApp:
         else: # 공이 6개가 골라지면,
             self.is_animating = False  # 볼 애니메이션을 중지. 
             self.storage.save(self.winners) # * SAVE 선택된 공들을 저장
-            self.root.after(500, self.pop_up) # 500ms이후에, 팝업을 띄운다. 
+            self.pop_up() # 500ms이후에, 팝업을 띄운다. -> # 지연에 의해서 reset된 빈값을 반환해서 root.after 삭제
             self.reset_game() # 초기화 상태로 전이
 
     def handle_winner(self, ball): 
@@ -91,7 +95,17 @@ class LottoApp:
         self.canvas.delete("ball")
 
     def pop_up(self):
-        # 결과 저장 및 팝업 표출 (기존 로직 활용)
-        selected_numbers = sorted(self.winners) # ASC기본
-        # LottoResultPopup(self.root, selected_numbers, self.storage.save)
-        print(f"최종 당첨 번호: {selected_numbers}")
+        # 1. 확정된 번호를 가져옴
+        selected_numbers = sorted(self.winners)
+        
+        # 2. [해결책] 팝업에 저장 함수(self.storage.save)를 넘기지 않습니다.
+        # 대신 "아무것도 하지 마라"는 가짜 함수(lambda x: None)를 넘깁니다.
+        # 이렇게 하면 팝업은 기존 코드를 유지하면서도 '저장'은 수행하지 못하게 됩니다.
+        LottoResultPopup(self.root, selected_numbers, lambda x: None)
+        
+        print(f"최종 당첨 번호 표출: {selected_numbers}")
+
+    def show_records(self):
+        """저장소의 데이터를 꺼내서 팝업에 전달하는 '배달' 역할만 수행"""
+        data = self.storage.read_all()
+        RecordViewPopup(self.root, data)
