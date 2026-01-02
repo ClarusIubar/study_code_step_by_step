@@ -48,3 +48,6 @@ class LottoResultPopup(tk.Toplevel):
         if self.on_save:
             self.on_save(self.numbers)
         self.destroy()
+
+    # def destroy(self):
+    #     return super().destroy()
