@@ -11,7 +11,7 @@ from acidrain.score_record_popup import ScoreRecordPopup
 class AcidRainApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("전략적 산성눈")
+        self.root.title("산성눈")
         
         self.physics_core = Physics_Core(cfg.WindowConfig.WIDTH, cfg.WindowConfig.HEIGHT)
         self.storage = AcidRainStorage()
