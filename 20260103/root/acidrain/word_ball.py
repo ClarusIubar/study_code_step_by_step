@@ -10,8 +10,7 @@ class WordBall:
         self.dx = random.uniform(*cfg.AcidRainConfig.SPEED_X_RANGE)
         self.dy = random.uniform(*cfg.AcidRainConfig.SPEED_Y_RANGE)
         
-        color_map = {2: "#fbc400", 3: "#69cfff", 4: "#ff7272"}
-        self.color = color_map.get(level, "white")
+        self.color = cfg.AcidRainConfig.COLORS.get(level, "white")
         
         self.oval = canvas.create_oval(x-self.radius, y-self.radius, x+self.radius, y+self.radius, 
                                        fill=self.color, outline="black", tags="word")

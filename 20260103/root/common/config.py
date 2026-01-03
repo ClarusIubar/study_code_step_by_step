@@ -19,5 +19,11 @@ class AcidRainConfig:
     SPAWN_INITIAL_MS, SPAWN_MIN_MS, LEVEL_UP_MS = 1500, 500, 20000
     SCORES = {2: 10, 3: 15, 4: 20}
 
+    COLORS = {
+        2: "#fbc400",
+        3: "#69cfff",
+        4: "#ff7272"
+    }
+
 class PopupConfig:
     RESULT_SIZE, RECORD_SIZE, CONFIRM_SIZE = (300, 180), (450, 350), (280, 130)
