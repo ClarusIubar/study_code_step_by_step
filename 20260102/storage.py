@@ -4,6 +4,7 @@ from datetime import datetime
 class LottoStorage:
     def __init__(self):
         self.data = []
+        self.last_id = 0
 
     def save(self, numbers):
         """
@@ -11,7 +12,10 @@ class LottoStorage:
         WORM 정책에 따라 한 번 생성된 ID와 번호는 수정할 수 없음.
         """
         # Auto Increment: 현재 리스트 길이를 기반으로 순차적 ID 부여
-        new_id = len(self.data) + 1
+        # 1,2,3,4,5 -> 4 삭제 후 추가 -> 1,2,3,4,5
+        # 마지막 id를 추적하는 카운터가 필요함. -> 생성자 last_id
+        self.last_id += 1
+        new_id = self.last_id
         
         record = {
             "id": new_id,                   # 시스템 식별용 (1, 2, 3...)
