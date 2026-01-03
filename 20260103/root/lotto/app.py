@@ -12,7 +12,7 @@ from lotto.record_popup import RecordViewPopup
 class LottoApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("모든 것이 랜덤인 로또") # 제목
+        self.root.title("낙하하는 로또공") # 제목
         self.root.geometry(f"{cfg.WindowConfig.WIDTH}x{cfg.WindowConfig.HEIGHT}")          # 창 크기 결정
 
         # 1. 물리 엔진 및 저장소 초기화

@@ -10,7 +10,7 @@ from acidrain.word_ball import WordBall
 class AcidRainApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("전략적 산성비")
+        self.root.title("산성눈")
         
         # 1. 초기 세팅
         self.physics_core = Physics_Core(cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT)
