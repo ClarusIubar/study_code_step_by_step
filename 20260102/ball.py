@@ -1,4 +1,5 @@
 import random
+import config as cfg
 
 class LottoBall():
     def __init__(self, canvas, number, x, y):
@@ -6,7 +7,7 @@ class LottoBall():
         self.number = number
         
         # 물리 엔진이 참조할 필수 인터페이스 속성
-        self.radius = 12
+        self.radius = cfg.BALL_RADIUS
         self.dx = random.uniform(-3, 3)
         self.dy = random.uniform(3, 6)
         
@@ -30,12 +31,13 @@ class LottoBall():
     # if조건에 따라서 볼의 색상을 다르게 함.
     # 실제 로또에서도 1~10, 11~20, 21~30, 31~40, 40~45까지 색이 다름.
     def _get_color(self, n):
-        """번호대에 따른 로또 공 색상 결정"""
-        if n <= 10: return "#fbc400"
-        if n <= 20: return "#69cfff"
-        if n <= 30: return "#ff7272"
-        if n <= 40: return "#aaaaaa"
-        return "#b0d840"
+        """[상수 주입] config의 색상 팔레트를 기반으로 번호대별 색상 할당"""
+        colors = cfg.BALL_COLORS
+        if n <= 10: return colors["yellow"]
+        if n <= 20: return colors["blue"]
+        if n <= 30: return colors["red"]
+        if n <= 40: return colors["gray"]
+        return colors["green"]
 
     def move_by(self, tx, ty):
         """엔진의 물리 연산 결과에 따라 실제 좌표 이동 (엔진의 U 관점)"""
