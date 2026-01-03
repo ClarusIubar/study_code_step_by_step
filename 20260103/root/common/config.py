@@ -14,9 +14,9 @@ class AcidRainConfig:
     WORD_RADIUS = 25
     
     SPEED_X_RANGE = (-0.5, 0.5) # 좌우 흔들림 범위
-    SPEED_Y_RANGE = (0.8, 1.5)  # 하강 속도 범위
+    SPEED_Y_RANGE = (0.8, 1.2)  # 하강 속도 범위
     
-    SPAWN_INITIAL_MS, SPAWN_MIN_MS, LEVEL_UP_MS = 1000, 400, 60000
+    SPAWN_INITIAL_MS, SPAWN_MIN_MS, LEVEL_UP_MS = 1500, 500, 20000
     SCORES = {2: 10, 3: 15, 4: 20}
 
 class PopupConfig:
