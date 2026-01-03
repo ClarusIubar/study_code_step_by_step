@@ -1,30 +1,20 @@
+# acidrain/word_ball.py
 import random
 import common.config as cfg
+from common.base_ball import BaseBall
 
-class WordBall:
+class WordBall(BaseBall):
     def __init__(self, canvas, word, level, x, y):
-        self.canvas, self.word, self.level = canvas, word, level
-        self.radius = cfg.AcidRainConfig.WORD_RADIUS
+        conf = cfg.AcidRainConfig.Physics
+        asset = cfg.AcidRainConfig.Assets.DATA.get(level, {"color": "white"})
         
-        # [정합성] config의 SPEED_RANGE를 언팩킹하여 적용
-        self.dx = random.uniform(*cfg.AcidRainConfig.SPEED_X_RANGE)
-        self.dy = random.uniform(*cfg.AcidRainConfig.SPEED_Y_RANGE)
+        dx = random.uniform(*conf.SPEED_X)
+        dy = random.uniform(*conf.SPEED_Y)
+        super().__init__(canvas, conf.WORD_RADIUS, dx, dy, x, y)
         
-        self.color = cfg.AcidRainConfig.COLORS.get(level, "white")
+        self.word, self.level = word, level
+        self.color = asset["color"]
         
         self.oval = canvas.create_oval(x-self.radius, y-self.radius, x+self.radius, y+self.radius, 
                                        fill=self.color, outline="black", tags="word")
         self.text = canvas.create_text(x, y, text=word, font=("Arial", 10, "bold"), tags="word")
-
-    def get_pos(self):
-        coords = self.canvas.coords(self.oval)
-        return (coords[0] + coords[2]) / 2, (coords[1] + coords[3]) / 2
-
-    def move_by(self, tx, ty):
-        self.canvas.move(self.oval, tx, ty); self.canvas.move(self.text, tx, ty)
-
-    def update(self): self.move_by(self.dx, self.dy)
-
-    def check_collision(self, win_y):
-        _, y = self.get_pos()
-        return y + self.radius >= win_y

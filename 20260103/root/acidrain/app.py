@@ -2,133 +2,91 @@ import tkinter as tk
 import json, random, os
 import common.config as cfg
 from common.physics import Physics_Core
-from acidrain.word_ball import WordBall
-from acidrain.storage import AcidRainStorage
-from acidrain.controller import AcidRainController
-from acidrain.game_over_popup import GameOverPopup
-from acidrain.score_record_popup import ScoreRecordPopup
+from .word_ball import WordBall
+from .storage import AcidRainStorage
+from .controller import AcidRainController
+from .game_over_popup import GameOverPopup
+from .score_record_popup import ScoreRecordPopup
 
 class AcidRainApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("산성눈")
-        
-        self.physics_core = Physics_Core(cfg.WindowConfig.WIDTH, cfg.WindowConfig.HEIGHT)
+        self.root.title("전략적 산성눈")
+        self.physics = Physics_Core(cfg.WindowConfig.WIDTH, cfg.WindowConfig.HEIGHT)
         self.storage = AcidRainStorage()
-        self.load_words()
-        
-        # 초기 상태 설정
-        self.score = 0
-        self.life = cfg.AcidRainConfig.LIFE
-        self.elapsed_time = 0 # [수정] 경과 시간 초기화
-        self.active_balls = []
-        self.is_running = False
-        
-        self.canvas = tk.Canvas(root, width=cfg.WindowConfig.WIDTH, height=500, bg="#222")
-        self.canvas.pack(fill="both", expand=True)
-        
-        self.entry = tk.Entry(root, font=("Arial", 14), justify="center")
-        self.entry.pack(pady=10)
-        self.entry.bind("<Return>", self.handle_input)
-        
-        self.controller = AcidRainController(root, on_start=self.start_game, on_read=self.show_records)
-        self.controller.pack(fill="x", side="bottom")
-        
-        self.status_label = tk.Label(root, text="시작 버튼을 누르세요", font=("Arial", 12))
-        self.status_label.pack()
-        self.win_y = 480
+        self._load_words()
+        self._build_ui()
+        self.active_balls, self.is_running = [], False
 
-    def load_words(self):
-        json_path = os.path.join(os.path.dirname(__file__), "words.json")
-        with open(json_path, "r", encoding="utf-8") as f:
-            self.word_data = json.load(f)
+    def _build_ui(self):
+        self.canvas = tk.Canvas(self.root, width=cfg.WindowConfig.WIDTH, height=500, bg="#222")
+        self.canvas.pack(fill="both", expand=True)
+        self.entry = tk.Entry(self.root, font=("Arial", 14), justify="center")
+        self.entry.pack(pady=10); self.entry.bind("<Return>", self.handle_input)
+        self.controller = AcidRainController(self.root, on_start=self.start_game, on_read=self.show_records)
+        self.controller.pack(fill="x", side="bottom")
+        self.status_label = tk.Label(self.root, text="시작 버튼을 누르세요", font=("Arial", 12)); self.status_label.pack()
+        self.win_y = 480
 
     def start_game(self):
         if self.is_running: return
-        
-        # 게임 상태 리셋
-        self.score = 0
-        self.life = cfg.AcidRainConfig.LIFE
-        self.elapsed_time = 0 # 시간 리셋
-        self.active_balls = []
-        self.canvas.delete("word")
-        self.is_running = True
-        self.spawn_interval = cfg.AcidRainConfig.SPAWN_INITIAL_MS
-        self.current_max_level = 2
-        
-        self.entry.focus_set()
-        self.spawn_word()
-        self.run_physics()
-        self.update_difficulty() # [중요] 누락되었던 메서드 호출 추가
-        self.update_status()
+        self.score, self.life, self.elapsed_time = 0, cfg.AcidRainConfig.Rules.LIFE, 0
+        self.active_balls, self.is_running, self.current_max_level = [], True, 2
+        self.canvas.delete("word"); self.entry.focus_set(); self.update_status()
+        self.spawn_interval, self.min_interval = cfg.AcidRainConfig.Rules.SPAWN_MS
+        self._run_loops()
 
-    def spawn_word(self):
-        if not self.is_running: return
-        pool = []
-        for level in range(2, self.current_max_level + 1):
-            pool.extend([(word, level) for word in self.word_data[f"level{level}"]])
-        
-        word, level = random.choice(pool)
-        x = random.randint(50, cfg.WindowConfig.WIDTH - 50)
-        self.active_balls.append(WordBall(self.canvas, word, level, x, -30))
-        
-        self.spawn_interval = max(cfg.AcidRainConfig.SPAWN_MIN_MS, self.spawn_interval - 10)
-        self.root.after(self.spawn_interval, self.spawn_word)
+    def _run_loops(self):
+        self._spawn_loop(); self._physics_loop(); self._difficulty_loop()
 
-    def handle_input(self, event):
+    def _spawn_loop(self):
         if not self.is_running: return
-        user_input = self.entry.get().strip()
-        self.entry.delete(0, tk.END)
-        
-        target_balls = [ball for ball in self.active_balls if ball.word == user_input]
-        for ball in target_balls:
-            self.score += cfg.AcidRainConfig.SCORES.get(ball.level, 0)
-            self.canvas.delete(ball.oval)
-            self.canvas.delete(ball.text)
-            self.active_balls.remove(ball)
-        self.update_status()
+        self._create_ball()
+        self.spawn_interval = max(self.min_interval, self.spawn_interval - 10)
+        self.root.after(self.spawn_interval, self._spawn_loop)
 
-    def run_physics(self):
+    def _physics_loop(self):
         if not self.is_running: return
-        self.physics_core.collision(self.active_balls)
+        self.physics.collision(self.active_balls)
         for ball in self.active_balls[:]:
-            self.physics_core.gravity(ball, cfg.AcidRainConfig.GRAVITY)
-            self.physics_core.wall_limit(ball) # 벽 충돌 로직
-            ball.update()
-            
+            self.physics.gravity(ball, cfg.AcidRainConfig.Physics.GRAVITY)
+            self.physics.wall_limit(ball); ball.update()
             if ball.check_collision(self.win_y):
-                self.life -= 1
-                self.canvas.delete(ball.oval)
-                self.canvas.delete(ball.text)
-                self.active_balls.remove(ball)
-                self.update_status()
-                if self.life <= 0:
-                    self.game_over()
-                    return
-        self.root.after(cfg.PhysicsConfig.FRAME_RATE_MS, self.run_physics)
+                self.life -= 1; self._remove_ball(ball); self.update_status()
+                if self.life <= 0: self._game_over(); return
+        self.root.after(cfg.PhysicsConfig.FRAME_RATE_MS, self._physics_loop)
 
-    # [수리] 완전히 빠져있던 난이도 조절 메서드 추가
-    def update_difficulty(self):
+    def _difficulty_loop(self):
         if not self.is_running: return
-        
-        self.elapsed_time += 1000 # 1초마다 누적
-        
-        # config에 정의한 LEVEL_UP_MS(20000) 기준으로 레벨업
-        if self.elapsed_time >= cfg.AcidRainConfig.LEVEL_UP_MS * 2:
-            if self.current_max_level < 4:
-                self.current_max_level = 4
-        elif self.elapsed_time >= cfg.AcidRainConfig.LEVEL_UP_MS:
-            if self.current_max_level < 3:
-                self.current_max_level = 3
-                
-        self.root.after(1000, self.update_difficulty)
+        self.elapsed_time += 1000
+        limit = cfg.AcidRainConfig.Rules.LEVEL_UP_MS
+        if self.elapsed_time >= limit * 2: self.current_max_level = 4
+        elif self.elapsed_time >= limit: self.current_max_level = 3
+        self.root.after(1000, self._difficulty_loop)
 
-    def update_status(self):
-        self.status_label.config(text=f"Score: {self.score} | Life: {'❤️'*self.life}")
+    def _create_ball(self):
+        pool = []
+        for lv in range(2, self.current_max_level + 1):
+            pool.extend([(w, lv) for w in self.word_data[f"level{lv}"]])
+        word, level = random.choice(pool)
+        self.active_balls.append(WordBall(self.canvas, word, level, random.randint(50, 550), -30))
 
-    def game_over(self):
-        self.is_running = False
-        GameOverPopup(self.root, self.score, self.storage.save_score)
+    def handle_input(self, e):
+        if not self.is_running: return
+        val = self.entry.get().strip(); self.entry.delete(0, tk.END)
+        for ball in [b for b in self.active_balls if b.word == val]:
+            self.score += cfg.AcidRainConfig.Assets.DATA[ball.level]["score"]
+            self._remove_ball(ball)
+        self.update_status()
 
-    def show_records(self):
-        ScoreRecordPopup(self.root, self.storage)
+    def _remove_ball(self, ball):
+        self.canvas.delete(ball.oval); self.canvas.delete(ball.text)
+        if ball in self.active_balls: self.active_balls.remove(ball)
+
+    def _load_words(self):
+        p = os.path.join(os.path.dirname(__file__), "words.json")
+        with open(p, "r", encoding="utf-8") as f: self.word_data = json.load(f)
+
+    def update_status(self): self.status_label.config(text=f"Score: {self.score} | Life: {'❤️'*self.life}")
+    def _game_over(self): self.is_running = False; GameOverPopup(self.root, self.score, self.storage.save_score)
+    def show_records(self): ScoreRecordPopup(self.root, self.storage)

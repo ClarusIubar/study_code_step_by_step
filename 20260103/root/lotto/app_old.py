@@ -1,30 +1,38 @@
-# lotto/app.py
+# app.py
 import tkinter as tk
 import random
 import common.config as cfg
 from common.physics import Physics_Core
-from .ball import LottoBall  # 상속 구조가 적용된 LottoBall
-from .storage import LottoStorage
-from .controller import Controller
-from .result_popup import LottoResultPopup
-from .record_popup import RecordViewPopup
+from lotto.ball import LottoBall
+from lotto.storage import LottoStorage
+from lotto.controller import Controller
+from lotto.result_popup import LottoResultPopup
+from lotto.record_popup import RecordViewPopup
 
 class LottoApp:
     def __init__(self, root):
         self.root = root
         self.root.title("낙하하는 로또공") # 제목
-        self.root.geometry(f"{cfg.WindowConfig.WIDTH}x{cfg.WindowConfig.HEIGHT}") # 창 크기 결정
+        self.root.geometry(f"{cfg.WindowConfig.WIDTH}x{cfg.WindowConfig.HEIGHT}")          # 창 크기 결정
 
         # 1. 물리 엔진 및 저장소 초기화
         self.physics_core = Physics_Core(cfg.WindowConfig.WIDTH, cfg.WindowConfig.HEIGHT) 
-        self.storage = LottoStorage() # 앱을 실행하면서, 저장소도 초기화
+        self.storage = LottoStorage()              # 앱을 실행하면서, 저장소도 초기화
         
         # 2. UI 레이아웃
         self.canvas = tk.Canvas(root, bg="white") # 그릴 캔버스 소환
         self.canvas.pack(fill="both", expand=True) # root랑 canvas는 pack으로 붙여줘야 동작
         
+        # # 3. 당첨 영역 설정(하단)
+        # * 동적 생성시에는 하드코딩하면 이상현상 생기니 생성자 초기화 하면 안됨.
+        # self.win_y = 450 # (0~450은 물리엔진동작 영역, 450~600은 당첨 영역)
+        # self.canvas.create_rectangle(0, self.win_y, 600, 500, fill="#FFD700", outline="") 
+        # # 하단에 닿는 영역(사각형) -> 닿으면 공이 선택되도록 영역
+        
         # 4. 버튼(하단) : Controller를 호출
         self.controller = Controller(root, on_draw=self.start_draw, on_read=self.show_records) 
+                                            # 버튼이 늘어나면, 여기도 매개변수를 추가해줘야함. 
+                                            # 여러 곳에서 수정해야 하는 문제 아닌가?
         self.controller.pack(fill="x", side="bottom")
 
         # 5. 상태 관리 리스트
@@ -69,8 +77,7 @@ class LottoApp:
         for i in range(1, 46): # 1번부터 45번까지 
             x = random.randint(50, width - 50)   # 좌표 랜덤 할당
             y = random.randint(-150, -30) # 좌표 랜덤 할당
-            # LottoBall은 이제 BaseBall을 상속받아 물리 인터페이스를 공유함
-            ball = LottoBall(self.canvas, i, x, y) 
+            ball = LottoBall(self.canvas, i, x, y) # 캔버스에 번호, x좌표, y좌표 전달.
             self.active_balls.append(ball) # 활성화된 공을 리스트에 추가
             
         self.is_animating = True # 애니메이션을 활성화
@@ -83,13 +90,13 @@ class LottoApp:
         self.physics_core.collision(self.active_balls) # 활성화된 공
         
         for ball in self.active_balls[:]:
-            self.physics_core.gravity(ball, g=cfg.LottoConfig.GRAVITY) # 중력 적용(아래로 이동하는 모멘텀)
+            self.physics_core.gravity(ball, g=cfg.LottoConfig.GRAVITY)    # 중력 적용(아래로 이동하는 모멘텀)
             self.physics_core.wall_limit(ball) # 경계 체크(canvas밖으로 이탈을 막아야 함)
-            ball.update() # 실제 좌표 반영 (BaseBall 인터페이스)
+            ball.update()                      # 실제 좌표 반영
             
             # 2. 게임 규칙 판정 (App의 책임)
-            if ball.check_collision(self.win_y): # 하단영역의 y좌표에 볼이 닿으면 (BaseBall 인터페이스)
-                if len(self.winners) < 6: # 5개까지는 활성화 상태, 6개면 작동하면 안됨.
+            if ball.check_collision(self.win_y): # 하단영역의 y좌표에 볼이 닿으면,
+                if len(self.winners) < 6: # 5개까지는 활성화 상태, 6개면 작동하면 안됨. (6개까지 골라야 하니까)
                     self.handle_winner(ball) # 일반공을 선택된 공으로 변환하는 함수 호출
                 
                 # [상태 관리] 리스트에서 제거하여 물리 연산 대상에서 제외
@@ -99,8 +106,9 @@ class LottoApp:
         if len(self.winners) < 6: # 아직 공이 6개 선택이 안 된 동안에는,
             self.root.after(cfg.PhysicsConfig.FRAME_RATE_MS, self.run_physics) # 15ms마다 계속 물리엔진을 호출
         else: # 공이 6개가 골라지면,
-            self.is_running = False  # 애니메이션 중지 상태 전이
-            self.pop_up() # 팝업을 띄운다
+            self.is_animating = False  # 볼 애니메이션을 중지. 
+            # self.storage.save(self.winners) # 저장하는 로직이 있어서 poup에서 결정을 못함 -> 저장을 팝업에서 할 수 있게 바꿔야 함.
+            self.pop_up() # 500ms이후에, 팝업을 띄운다. -> # 지연에 의해서 reset된 빈값을 반환해서 root.after 삭제
             self.reset_game() # 초기화 상태로 전이
 
     def handle_winner(self, ball): 
@@ -110,15 +118,16 @@ class LottoApp:
 
     def reset_game(self):
         """상태 초기화(Reset): 다음 드로우를 위한 준비"""
-        self.is_animating = False
         self.winners = []
         self.active_balls = []
-        # 다음 판을 위해 시각적 요소는 유지하거나 삭제할 수 있음 (사용자 의도에 따라 선택)
+        self.canvas.delete("ball")
 
     def pop_up(self):
         # 1. 확정된 번호를 가져옴
         selected_numbers = sorted(self.winners)
         LottoResultPopup(self.root, selected_numbers, self.storage.save)
+
+        # print(f"최종 당첨 번호 표출: {selected_numbers}")
 
     def show_records(self):
         """데이터 대신 storage 객체 자체를 넘겨 조작 가능하게 함"""
