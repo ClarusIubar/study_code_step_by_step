@@ -1,5 +1,6 @@
 # record_popup.py
 import tkinter as tk
+import common.config as cfg
 from common.base_popup import BasePopup
 from lotto.delete_check_popup import DeleteCheckPopup
 
@@ -8,7 +9,7 @@ class RecordViewPopup(BasePopup):
         # [주의] 부모의 __init__ 내에서 _build_ui가 호출되므로 
         # storage를 부모 호출보다 먼저 할당해야 에러가 나지 않음
         self.storage = storage 
-        super().__init__(root, "전체 저장 기록 조회", width=450, height=350)
+        super().__init__(root, "전체 저장 기록 조회", *cfg.PopupConfig.RECORD_SIZE)
 
     def _build_ui(self):
         """추상 메서드 구현: 리스트 렌더링 시작"""

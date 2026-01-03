@@ -1,26 +1,18 @@
-# config.py
 
-# 1. 창 및 레이아웃 설정
-WINDOW_WIDTH = 600
-WINDOW_HEIGHT = 650
-WIN_ZONE_RATIO = 0.85  # 전체 높이 대비 당첨 영역 시작 비율
+class WindowConfig:
+    WIDTH, HEIGHT, WIN_ZONE_RATIO = 600, 650, 0.85
 
-# 2. 물리 엔진 상수
-GRAVITY = 0.2
-BOUNCE_FACTOR = 0.7
-FRAME_RATE_MS = 15
+class PhysicsConfig:
+    FRAME_RATE_MS, BOUNCE_FACTOR = 15, 0.7
 
-# 3. 볼 관련 설정
-BALL_RADIUS = 12
-BALL_COLORS = {
-    "yellow": "#fbc400",  # 1-10
-    "blue": "#69cfff",    # 11-20
-    "red": "#ff7272",     # 21-30
-    "gray": "#aaaaaa",    # 31-40
-    "green": "#b0d840"    # 41-45
-}
+class LottoConfig:
+    GRAVITY, BALL_RADIUS = 0.2, 12
+    COLORS = {"yellow": "#fbc400", "blue": "#69cfff", "red": "#ff7272", "gray": "#aaaaaa", "green": "#b0d840"}
 
-# 4. 팝업 크기 설정
-POPUP_RESULT_SIZE = (300, 180)
-POPUP_RECORD_SIZE = (450, 350)
-POPUP_CONFIRM_SIZE = (280, 130)
+class AcidRainConfig:
+    GRAVITY, LIFE = 0.05, 5
+    SPAWN_INITIAL_MS, SPAWN_MIN_MS, LEVEL_UP_MS = 1000, 400, 60000
+    SCORES = {2: 10, 3: 15, 4: 20}
+
+class PopupConfig:
+    RESULT_SIZE, RECORD_SIZE, CONFIRM_SIZE = (300, 180), (450, 350), (280, 130)

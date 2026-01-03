@@ -13,10 +13,10 @@ class LottoApp:
     def __init__(self, root):
         self.root = root
         self.root.title("모든 것이 랜덤인 로또") # 제목
-        self.root.geometry(f"{cfg.WINDOW_WIDTH}x{cfg.WINDOW_HEIGHT}")          # 창 크기 결정
+        self.root.geometry(f"{cfg.WindowConfig.WIDTH}x{cfg.WindowConfig.HEIGHT}")          # 창 크기 결정
 
         # 1. 물리 엔진 및 저장소 초기화
-        self.physics_core = Physics_Core(cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT) 
+        self.physics_core = Physics_Core(cfg.WindowConfig.WIDTH, cfg.WindowConfig.HEIGHT) 
         self.storage = LottoStorage()              # 앱을 실행하면서, 저장소도 초기화
         
         # 2. UI 레이아웃
@@ -50,7 +50,7 @@ class LottoApp:
         curr_h = self.canvas.winfo_height()
         
         # 1. 비율에 따른 당첨 기준선(Floor) 계산
-        self.win_y = int(curr_h * cfg.WIN_ZONE_RATIO) 
+        self.win_y = int(curr_h * cfg.WindowConfig.WIN_ZONE_RATIO) 
         
         # 2. 물리 엔진의 경계를 현재 캔버스 크기에 맞춤
         self.physics_core.width = curr_w
@@ -90,7 +90,7 @@ class LottoApp:
         self.physics_core.collision(self.active_balls) # 활성화된 공
         
         for ball in self.active_balls[:]:
-            self.physics_core.gravity(ball)    # 중력 적용(아래로 이동하는 모멘텀)
+            self.physics_core.gravity(ball, g=cfg.LottoConfig.GRAVITY)    # 중력 적용(아래로 이동하는 모멘텀)
             self.physics_core.wall_limit(ball) # 경계 체크(canvas밖으로 이탈을 막아야 함)
             ball.update()                      # 실제 좌표 반영
             
@@ -104,7 +104,7 @@ class LottoApp:
 
         # root.after(ms마다 동작하도록 loop)
         if len(self.winners) < 6: # 아직 공이 6개 선택이 안 된 동안에는,
-            self.root.after(15, self.run_physics) # 15ms마다 계속 물리엔진을 호출
+            self.root.after(cfg.PhysicsConfig.FRAME_RATE_MS, self.run_physics) # 15ms마다 계속 물리엔진을 호출
         else: # 공이 6개가 골라지면,
             self.is_animating = False  # 볼 애니메이션을 중지. 
             # self.storage.save(self.winners) # 저장하는 로직이 있어서 poup에서 결정을 못함 -> 저장을 팝업에서 할 수 있게 바꿔야 함.

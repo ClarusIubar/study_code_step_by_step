@@ -1,12 +1,13 @@
 # delete_check_popup.py
 import tkinter as tk
+import common.config as cfg
 from common.base_popup import BasePopup
 
 class DeleteCheckPopup(BasePopup):
     def __init__(self, root, record_id, on_confirm):
         self.record_id = record_id
         self.on_confirm = on_confirm
-        super().__init__(root, "삭제 확인", width=280, height=130)
+        super().__init__(root, "삭제 확인", *cfg.PopupConfig.CONFIRM_SIZE)
 
     def _build_ui(self):
         """추상 메서드 구현: 확인 문구 및 예/아니오 버튼"""
