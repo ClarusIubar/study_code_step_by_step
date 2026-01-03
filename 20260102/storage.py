@@ -24,7 +24,7 @@ class LottoStorage:
         }
         
         self.data.append(record)
-        print(f"[Storage] 데이터 저장 완료: ID {new_id}")
+        # print(f"[Storage] 데이터 저장 완료: ID {new_id}")
         return record
 
     def read_all(self):
