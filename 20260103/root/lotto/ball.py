@@ -1,5 +1,5 @@
 import random
-import config as cfg
+import common.config as cfg
 
 class LottoBall():
     def __init__(self, canvas, number, x, y):

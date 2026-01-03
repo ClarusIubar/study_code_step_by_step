@@ -1,6 +1,6 @@
 # delete_check_popup.py
 import tkinter as tk
-from base_popup import BasePopup
+from common.base_popup import BasePopup
 
 class DeleteCheckPopup(BasePopup):
     def __init__(self, root, record_id, on_confirm):

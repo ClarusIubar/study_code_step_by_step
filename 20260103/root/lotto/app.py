@@ -1,13 +1,13 @@
 # app.py
 import tkinter as tk
 import random
-import config as cfg
-from physics import Physics_Core
-from ball import LottoBall
-from storage import LottoStorage
-from controller import Controller
-from result_popup import LottoResultPopup
-from record_popup import RecordViewPopup
+import common.config as cfg
+from common.physics import Physics_Core
+from lotto.ball import LottoBall
+from lotto.storage import LottoStorage
+from lotto.controller import Controller
+from lotto.result_popup import LottoResultPopup
+from lotto.record_popup import RecordViewPopup
 
 class LottoApp:
     def __init__(self, root):

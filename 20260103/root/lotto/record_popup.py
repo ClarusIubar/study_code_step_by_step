@@ -1,7 +1,7 @@
 # record_popup.py
 import tkinter as tk
-from base_popup import BasePopup
-from delete_check_popup import DeleteCheckPopup
+from common.base_popup import BasePopup
+from lotto.delete_check_popup import DeleteCheckPopup
 
 class RecordViewPopup(BasePopup):
     def __init__(self, root, storage):
