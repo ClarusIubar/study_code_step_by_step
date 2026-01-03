@@ -33,6 +33,6 @@ low_stock_items = mart.get_products_under_stock(20)
 print(low_stock_items.name, sep=',') # 삼각김밥, 초코파이
 
 # 래퍼 클래스, 스마트 컨테이너 동작 확인
-# print(repr(low_stock_items))
-# print(low_stock_items[0].name)
-# print(low_stock_items[0].price)
+# print(repr(low_stock_items))    # Resultset([Product(name='삼각김밥', price=1200, stock=5, category=<Category.RETORT: '간편식'>), Product(name='초코파이', price=4500, stock=18, category=<Category.SNACK: '과자'>)]) <Count: 2>
+# print(low_stock_items[0].name)  # 삼각김밥
+# print(low_stock_items[0].price) # 1200
