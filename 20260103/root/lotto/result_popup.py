@@ -1,5 +1,6 @@
 # result_popup.py
 import tkinter as tk
+import common.config as cfg
 from common.base_popup import BasePopup
 
 class LottoResultPopup(BasePopup):
@@ -7,7 +8,7 @@ class LottoResultPopup(BasePopup):
         self.numbers = numbers
         self.on_save = on_save
         # 부모 생성자 호출 (제목, 가로, 세로) -> 내부에서 _build_ui 실행됨
-        super().__init__(root, "추출 결과", width=300, height=180)
+        super().__init__(root, "추출 결과", *cfg.PopupConfig.RESULT_SIZE)
 
     def _build_ui(self):
         """추상 메서드 구현: 결과 안내 및 버튼 배치"""
