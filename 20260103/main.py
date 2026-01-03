@@ -20,9 +20,9 @@ print(salary) # 78880
 #    - 현재 정보를 출력하고 (여러분이 만든 메서드 호출)
 #    - 5개를 판매 처리하세요.
 #    - 다시 현재 정보를 출력하여 재고가 줄었는지 확인하세요.
-gimbab = mart.find_product("삼각김밥").process_sale(5)   # 삼각김밥 5개 판매 완료. (남은 재고: 10)
-gimbab = mart.find_product("삼각김밥").process_sale(100) # 삼각김밥: 재고가 부족합니다. (현재 재고: 10)
-gimbab = mart.find_product("삼각김밥").process_sale(5)   # 삼각김밥 5개 판매 완료. (남은 재고: 5)
+gimbab = mart.find_product("삼각김밥").process_sell(5)   # 삼각김밥 5개 판매 완료. (남은 재고: 10)
+gimbab = mart.find_product("삼각김밥").process_sell(100) # 삼각김밥: 재고가 부족합니다. (현재 재고: 10)
+gimbab = mart.find_product("삼각김밥").process_sell(5)   # 삼각김밥 5개 판매 완료. (남은 재고: 5)
 
 # 4. [보너스] 전체 재고 파악
 #    - mart가 가진 모든 상품을 반복문으로 돌면서,

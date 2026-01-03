@@ -36,7 +36,7 @@ class Product(StandardModel):
         return f"[{self.category.value}] {self.name} | 가격: {self.price}원 | 재고: {self.stock}개"
 
     # 기능 B: 판매 처리
-    def process_sale(self, quantity: int):
+    def process_sell(self, quantity: int):
         try:
             self.stock -= quantity
             print(f"{self.name} {quantity}개 판매 완료. (남은 재고: {self.stock})")
