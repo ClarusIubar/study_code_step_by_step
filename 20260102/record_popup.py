@@ -2,30 +2,63 @@
 import tkinter as tk
 
 class RecordViewPopup(tk.Toplevel):
-    def __init__(self, root, data):
+    def __init__(self, root, storage): # storage 객체를 주입받음
         super().__init__(root)
+        self.storage = storage
         self.title("전체 저장 기록 조회")
         
         # 위치 정합성 (부모 중앙 배치)
         self._align_to_center(root)
         
+        # UI 그리기 시작
+        self.render_list()
+
+    def render_list(self):
+        """저장소의 데이터를 기반으로 리스트를 렌더링 (삭제 후 재호출 가능)"""
+        # 기존에 그려진 위젯이 있다면 모두 제거 (새로고침 효과)
+        for widget in self.winfo_children():
+            widget.destroy()
+
         # 상단 타이틀
         tk.Label(self, text="[ 로또 추출 이력 ]", font=("Arial", 12, "bold"), pady=10).pack()
         
-        # 데이터 렌더링 영역 (스크롤이 없는 단순 버전이므로 Label로 순회)
-        if not data:
+        # storage에서 데이터 읽기
+        all_records = self.storage.read_all()
+        
+        if not all_records:
             tk.Label(self, text="저장된 데이터가 없습니다.", font=("Arial", 11), pady=50, fg="gray").pack()
         else:
-            for r in data:
-                # [교정] storage.py의 키값(id, numbers, date)과 일치시킴
-                text = f"ID:{r['id']:02d} | {r['numbers']} | {r['date']}"
-                tk.Label(self, text=text, font=("Consolas", 9), pady=2).pack()
+            for record in all_records:
+                row_frame = tk.Frame(self)
+                row_frame.pack(fill="x", padx=20, pady=2)
+                
+                # 가독성을 위해 변수명 명확히 분리
+                record_id = record['id']
+                lotto_numbers = record['numbers']
+                created_date = record['date']
+                
+                display_text = f"ID:{record_id:02d} | {lotto_numbers} | {created_date}"
+                tk.Label(row_frame, text=display_text, font=("Consolas", 9)).pack(side="left")
+                
+                # 삭제 버튼: lambda를 통해 해당 ID를 박제
+                tk.Button(
+                    row_frame, 
+                    text="X", 
+                    fg="red", 
+                    command=lambda target_id=record_id: self.handle_delete(target_id)
+                ).pack(side="right")
         
+        # 하단 닫기 버튼
         tk.Button(self, text="닫기", width=10, command=self.destroy).pack(pady=15)
+
+    def handle_delete(self, target_id):
+        """ID를 기반으로 데이터 삭제 후 화면 갱신"""
+        self.storage.delete_by_id(target_id)
+        self.render_list() # 삭제 후 리스트 다시 그리기
 
     def _align_to_center(self, root):
         self.update_idletasks()
-        w, h = 450, 350 # 가로 길이를 데이터 출력에 맞춰 확장
+        w, h = 450, 350
         px, py = root.winfo_rootx(), root.winfo_rooty()
         pw, ph = root.winfo_width(), root.winfo_height()
         x = px + (pw // 2) - (w // 2)

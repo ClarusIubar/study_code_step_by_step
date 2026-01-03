@@ -79,7 +79,7 @@ class LottoApp:
             self.root.after(15, self.run_physics) # 15ms마다 계속 물리엔진을 호출
         else: # 공이 6개가 골라지면,
             self.is_animating = False  # 볼 애니메이션을 중지. 
-            self.storage.save(self.winners) # * SAVE 선택된 공들을 저장
+            # self.storage.save(self.winners) # 저장하는 로직이 있어서 poup에서 결정을 못함 -> 저장을 팝업에서 할 수 있게 바꿔야 함.
             self.pop_up() # 500ms이후에, 팝업을 띄운다. -> # 지연에 의해서 reset된 빈값을 반환해서 root.after 삭제
             self.reset_game() # 초기화 상태로 전이
 
@@ -97,15 +97,10 @@ class LottoApp:
     def pop_up(self):
         # 1. 확정된 번호를 가져옴
         selected_numbers = sorted(self.winners)
-        
-        # 2. [해결책] 팝업에 저장 함수(self.storage.save)를 넘기지 않습니다.
-        # 대신 "아무것도 하지 마라"는 가짜 함수(lambda x: None)를 넘깁니다.
-        # 이렇게 하면 팝업은 기존 코드를 유지하면서도 '저장'은 수행하지 못하게 됩니다.
-        LottoResultPopup(self.root, selected_numbers, lambda x: None)
-        
-        print(f"최종 당첨 번호 표출: {selected_numbers}")
+        LottoResultPopup(self.root, selected_numbers, self.storage.save)
+
+        # print(f"최종 당첨 번호 표출: {selected_numbers}")
 
     def show_records(self):
-        """저장소의 데이터를 꺼내서 팝업에 전달하는 '배달' 역할만 수행"""
-        data = self.storage.read_all()
-        RecordViewPopup(self.root, data)
+        """데이터 대신 storage 객체 자체를 넘겨 조작 가능하게 함"""
+        RecordViewPopup(self.root, self.storage)
