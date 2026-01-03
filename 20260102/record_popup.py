@@ -1,5 +1,6 @@
 # record_popup.py
 import tkinter as tk
+from delete_check_popup import DeleteCheckPopup
 
 class RecordViewPopup(tk.Toplevel):
     def __init__(self, root, storage): # storage 객체를 주입받음
@@ -12,6 +13,15 @@ class RecordViewPopup(tk.Toplevel):
         
         # UI 그리기 시작
         self.render_list()
+
+    def _align_to_center(self, root):
+        self.update_idletasks()
+        w, h = 450, 350
+        px, py = root.winfo_rootx(), root.winfo_rooty()
+        pw, ph = root.winfo_width(), root.winfo_height()
+        x = px + (pw // 2) - (w // 2)
+        y = py + (ph // 2) - (h // 2)
+        self.geometry(f"{w}x{h}+{x}+{y}")    
 
     def render_list(self):
         """저장소의 데이터를 기반으로 리스트를 렌더링 (삭제 후 재호출 가능)"""
@@ -52,15 +62,15 @@ class RecordViewPopup(tk.Toplevel):
         tk.Button(self, text="닫기", width=10, command=self.destroy).pack(pady=15)
 
     def handle_delete(self, target_id):
-        """ID를 기반으로 데이터 삭제 후 화면 갱신"""
-        self.storage.delete_by_id(target_id)
-        self.render_list() # 삭제 후 리스트 다시 그리기
+        """바로 삭제하지 않고, 재확인 팝업을 먼저 띄움"""
+        DeleteCheckPopup(
+            root=self, 
+            record_id=target_id, 
+            on_confirm=self._execute_actual_delete # 확인 시 실행될 진짜 삭제 함수
+        )
 
-    def _align_to_center(self, root):
-        self.update_idletasks()
-        w, h = 450, 350
-        px, py = root.winfo_rootx(), root.winfo_rooty()
-        pw, ph = root.winfo_width(), root.winfo_height()
-        x = px + (pw // 2) - (w // 2)
-        y = py + (ph // 2) - (h // 2)
-        self.geometry(f"{w}x{h}+{x}+{y}")
+    def _execute_actual_delete(self, record_id):
+        """사용자가 '예'를 눌렀을 때만 호출되는 최종 삭제 단계"""
+        self.storage.delete_by_id(record_id)
+        self.render_list() # 리스트 갱신
+
