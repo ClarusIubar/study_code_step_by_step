@@ -4,7 +4,7 @@ from validate import StandardModel
 
 T = TypeVar("T", bound=StandardModel)
 
-class SmartQuerySet(Generic[T]):
+class SmartQuerySet(Generic[T]): # fluent interface
     """[Query] 개발 편의성을 위한 스마트 프로젝션 엔진"""
     def __init__(self, items: Iterable[T] = None):
         self._items = list(items) if items else []
@@ -26,7 +26,7 @@ class SmartQuerySet(Generic[T]):
     def __repr__(self): return f"SmartQuerySet({self._items}) <Count: {len(self._items)}>"
 
 
-class MartRepository:
+class MartRepository: # CQRS
     """[Command/Storage] CQRS를 지키기 위한 타입 기반 저장소"""
     def __init__(self):
         self._storage: Dict[Type[StandardModel], Dict[str, Any]] = {}
