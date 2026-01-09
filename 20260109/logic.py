@@ -2,23 +2,24 @@ import json
 
 class VendingMachine:
     def __init__(self, json_data):
-        try:
-            # 데이터가 없거나 비어있으면 기본 구조 할당
-            if not json_data or json_data.strip() == "":
-                raise ValueError("Empty data")
-            self.products_data = json.loads(json_data)
-        except Exception:
-            self.products_data = {"default": {"name": "준비중", "image": "https://img.icons8.com/color/144/beverage.png"}}
-
         self.products = {}
+        try:
+            # 데이터가 비어있을 경우에 대한 방어
+            data = json.loads(json_data) if json_data.strip() else {}
+        except:
+            data = {}
+
+        # 1~36번 슬롯 생성
         for i in range(1, 37):
             key = str(i)
-            if key in self.products_data:
-                self.products[i] = self.products_data[key]
+            if key in data:
+                self.products[i] = data[key]
             else:
-                self.products[i] = self.products_data.get("default", {"name": f"상품-{i:02d}", "image": ""}).copy()
-                if "name" not in self.products[i] or self.products[i]["name"] == "준비중":
-                    self.products[i]["name"] = f"상품-{i:02d}"
+                # 데이터 없을 시 기본 이미지(아이콘) 적용
+                self.products[i] = {
+                    "name": f"상품-{i:02d}",
+                    "image": "https://img.icons8.com/color/144/beverage.png"
+                }
 
     def get_product(self, code_str):
         try:
@@ -26,6 +27,6 @@ class VendingMachine:
             if code in self.products:
                 item = self.products[code]
                 return item, f"{code}번 {item['name']} 선택"
-            return None, f"오류: {code}번 없음"
+            return None, f"번호 오류: {code}번 없음"
         except:
-            return None, "오류: 숫자 입력 필요"
+            return None, "숫자만 입력 가능합니다."

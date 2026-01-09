@@ -2,21 +2,63 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>Vending Machine System</title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <style>
-        .container { display: flex; gap: 20px; padding: 20px; font-family: sans-serif; max-width: 1400px; margin: 0 auto; }
-        .box { border: 2px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: white; }
-        .grid-6x6 { flex: 1.5; display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; border: 3px solid #333; padding: 15px; background: #eee; }
-        .grid-item { border: 1px solid #ccc; text-align: center; font-size: 11px; background: #fff; padding: 10px; border-radius: 5px; }
-        .grid-item img { width: 100%; height: auto; max-height: 80px; object-fit: contain; }
-        .side-panel { flex: 1; display: flex; flex-direction: column; }
-        .memo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
-        .memo-sticker { aspect-ratio: 1/1; background: #fff9c4; border: 1px solid #fbc02d; padding: 5px; font-size: 10px; box-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
-        .payment-space { height: 80px; border: 2px dashed #007bff; display: flex; align-items: center; justify-content: center; background: #f0f7ff; color: #007bff; font-weight: bold; margin-bottom: 10px; border-radius: 5px; }
-        .output-slot { height: 200px; background: #222; border: 8px inset #444; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FFD700; border-radius: 10px; }
-        #out-img { height: 130px; display: none; }
-        #display-log { background: #1a1a1a; color: #0f0; padding: 15px; border-radius: 5px; font-family: monospace; margin: 20px; }
+        /* 전체 레이아웃: 화면 높이에 맞춰 조정 */
+        body { margin: 0; background-color: #f8f9fa; }
+        .container { display: flex; gap: 20px; padding: 20px; height: 100vh; box-sizing: border-box; }
+        
+        /* 좌측: 제품 진열대 (6x6 고정, 스크롤 방지) */
+        .grid-6x6 { 
+            flex: 1.5; display: grid; grid-template-columns: repeat(6, 1fr); 
+            grid-template-rows: repeat(6, 1fr); gap: 8px; 
+            border: 3px solid #333; padding: 12px; background: #eee; border-radius: 8px;
+        }
+        .grid-item { 
+            border: 1px solid #ccc; text-align: center; font-size: 11px; 
+            background: #fff; padding: 5px; border-radius: 4px; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        .grid-item img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 4px; }
+
+        /* 우측 패널 순서 고정: 메모 > 입력 > 결제 > 토출구 */
+        .side-panel { flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+        .box { border: 2px solid #333; padding: 12px; border-radius: 8px; background: white; }
+        h3 { margin-top: 0; margin-bottom: 10px; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        
+        /* 1. 건의함 메모 (3x3) */
+        .memo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 8px; }
+        .memo-sticker { 
+            aspect-ratio: 1/1; background: #fff9c4; border: 1px solid #fbc02d; 
+            padding: 5px; font-size: 10px; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); 
+        }
+
+        /* 3. 결제 시스템 (공간 유지) */
+        .payment-box { 
+            height: 60px; border: 2px dashed #007bff; display: flex; 
+            align-items: center; justify-content: center; background: #eef7ff; 
+            color: #007bff; font-weight: bold; border-radius: 4px; 
+        }
+
+        /* 4. 상품 토출구 */
+        .output-slot { 
+            height: 160px; background: #222; border: 6px inset #444; 
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; color: #FFD700; border-radius: 8px; 
+        }
+        #out-img { height: 100px; display: none; }
+
+        .input-group { display: flex; gap: 5px; margin-bottom: 8px; }
+        input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+        button { padding: 6px 10px; cursor: pointer; border-radius: 4px; border: 1px solid #333; background: #f4f4f4; font-size: 13px; }
+        
+        #display-log { 
+            position: fixed; bottom: 0; left: 0; right: 0; height: 40px;
+            background: #1a1a1a; color: #0f0; padding: 10px 20px; 
+            font-family: monospace; font-size: 13px; z-index: 100;
+        }
     </style>
     <py-config>
         [[fetch]]
@@ -27,14 +69,15 @@
 
 <div class="container">
     <div id="product-grid" class="grid-6x6"></div>
+
     <div class="side-panel">
         <div class="box">
-            <h3>1. 건의함 메모</h3>
-            <div style="display:flex; gap:5px; margin-bottom:10px;">
-                <input type="number" id="memo-id" placeholder="ID" style="width:50px;">
+            <h3>1. 건의함 (3x3)</h3>
+            <div class="input-group">
+                <input type="number" id="memo-id" placeholder="ID" style="width:40px;">
                 <input type="text" id="memo-title" placeholder="내용" style="flex:1;">
             </div>
-            <div style="display:flex; gap:5px;">
+            <div class="input-group">
                 <button id="m-create">생성</button>
                 <button id="m-update">수정</button>
                 <button id="m-delete">삭제</button>
@@ -44,78 +87,82 @@
 
         <div class="box">
             <h3>2. 제품 번호 입력</h3>
-            <div style="display:flex; gap:5px;">
-                <input type="text" id="code-input" placeholder="00" style="width:70px; font-size:18px;">
-                <button id="confirm-btn" style="flex:1; background:#007bff; color:white; border:none; cursor:pointer;">번호 결정</button>
+            <div class="input-group">
+                <input type="text" id="code-input" placeholder="00" style="width:60px; font-size:16px; font-weight:bold;">
+                <button id="confirm-btn" style="flex:1; background:#007bff; color:white; border:none; font-weight:bold;">번호 결정</button>
             </div>
         </div>
 
         <div class="box">
             <h3>3. 결제 시스템</h3>
-            <div class="payment-space">결제 모듈 대기 중</div>
+            <div class="payment-box">결제 모듈 대기 중</div>
         </div>
 
         <div class="box">
             <h3>4. 상품 토출구</h3>
             <div id="product-out" class="output-slot">
                 <img id="out-img" src="">
-                <span id="out-text" style="margin-top:10px;">EMPTY</span>
+                <span id="out-text">EMPTY</span>
             </div>
         </div>
     </div>
 </div>
 
-<div id="display-log">> 시스템 대기 중...</div>
+<div id="display-log">> 시스템 준비 완료.</div>
 
 <script type="py">
-    import json
+    import asyncio
     from logic import VendingMachine
     from memo import MemoManager
     from pyscript import document
     from pyodide.ffi import create_proxy
 
-    def start_app():
-        # 파일 읽기 시도
+    async def init_vending_machine():
+        # 데이터 로딩 대기
+        await asyncio.sleep(0.2)
+        
         try:
             with open("products.json", "r", encoding="utf-8") as f:
-                raw_data = f.read()
+                json_str = f.read()
         except:
-            raw_data = ""
+            json_str = ""
 
-        vm = VendingMachine(raw_data)
+        vm = VendingMachine(json_str)
         mm = MemoManager()
 
         def refresh_memos():
-            g = document.querySelector("#memo-grid")
-            g.innerHTML = ""
+            grid = document.querySelector("#memo-grid")
+            grid.innerHTML = ""
             for mid, title in mm.read_memos().items():
                 div = document.createElement("div")
                 div.className = "memo-sticker"
                 div.innerHTML = f"<b>{mid}</b><br>{title}"
-                g.appendChild(div)
+                grid.appendChild(div)
 
-        # UI 초기화
+        # 진열대 초기화
         p_grid = document.querySelector("#product-grid")
-        for code, data in vm.products.items():
+        p_grid.innerHTML = ""
+        for code, item in vm.products.items():
             div = document.createElement("div")
             div.className = "grid-item"
-            div.innerHTML = f"<img src='{data.get('image','')}'> <br><b>{code}</b>"
+            div.innerHTML = f"<img src='{item['image']}' onerror='this.src=\"https://img.icons8.com/color/48/error.png\"'><br>{code}"
             p_grid.appendChild(div)
+        
         refresh_memos()
 
         def handle_confirm(e):
             val = document.querySelector("#code-input").value
             item, status = vm.get_product(val)
             document.querySelector("#display-log").innerText = f"> {status}"
-            img_el = document.querySelector("#out-img")
-            txt_el = document.querySelector("#out-text")
+            img = document.querySelector("#out-img")
+            txt = document.querySelector("#out-text")
             if item:
-                img_el.src = item["image"]
-                img_el.style.display = "block"
-                txt_el.innerText = item["name"]
+                img.src = item["image"]
+                img.style.display = "block"
+                txt.innerText = item["name"]
             else:
-                img_el.style.display = "none"
-                txt_el.innerText = "EMPTY"
+                img.style.display = "none"
+                txt.innerText = "EMPTY"
 
         def handle_memo(op):
             try:
@@ -131,10 +178,8 @@
         document.querySelector("#m-create").onclick = create_proxy(lambda e: handle_memo("C"))
         document.querySelector("#m-update").onclick = create_proxy(lambda e: handle_memo("U"))
         document.querySelector("#m-delete").onclick = create_proxy(lambda e: handle_memo("D"))
-        document.querySelector("#display-log").innerText = "> 준비 완료."
 
-    # 실행
-    start_app()
+    asyncio.ensure_future(init_vending_machine())
 </script>
 </body>
 </html>

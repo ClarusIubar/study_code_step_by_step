@@ -1,0 +1,7 @@
+{
+  "1": {"name": "콜라", "image": "https://img.icons8.com/color/100/cola.png"},
+  "2": {"name": "사이다", "image": "https://img.icons8.com/color/100/sprite.png"},
+  "3": {"name": "오렌지주스", "image": "https://img.icons8.com/color/100/orange-juice.png"},
+  "4": {"name": "커피", "image": "https://img.icons8.com/color/100/coffee-go.png"},
+  "default": {"name": "음료", "image": "https://img.icons8.com/color/100/beverage.png"}
+}
