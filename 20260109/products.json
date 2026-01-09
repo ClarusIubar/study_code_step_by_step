@@ -1,5 +1,224 @@
 {
-  "1": {"name": "콜라", "price": 1500, "stock": 10, "image": "https://img.icons8.com/color/144/coca-cola.png"},
-  "2": {"name": "사이다", "price": 1400, "stock": 10, "image": "https://img.icons8.com/color/144/sprite.png"},
-  "default": {"name": "준비중", "price": 1000, "stock": 10, "image": "https://img.icons8.com/color/144/beverage.png"}
+  "1": {
+    "name": "삼다수 500ml",
+    "price": 1100,
+    "stock": 10,
+    "image": "https://prod.danawa.com/info/?pcode=904906"
+  },
+  "2": {
+    "name": "칠성사이다 500ml",
+    "price": 2200,
+    "stock": 10,
+    "image": "https://prod.danawa.com/info/?pcode=1250475"
+  },
+  "3": {
+    "name": "펩시 제로 500ml",
+    "price": 2000,
+    "stock": 10,
+    "image": "https://pngimg.com/uploads/pepsi/pepsi_PNG1.png"
+  },
+  "4": {
+    "name": "코카콜라 500ml",
+    "price": 2300,
+    "stock": 10,
+    "image": "https://pngimg.com/uploads/cocacola/cocacola_PNG9.png"
+  },
+  "5": {
+    "name": "조지아 크래프트 470ml",
+    "price": 2500,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/8B4513/FFFFFF?text=조지아"
+  },
+  "6": {
+    "name": "티오피 아메리카노 275ml",
+    "price": 2200,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/A0522D/FFFFFF?text=티오피"
+  },
+  "7": {
+    "name": "바나나맛 우유 240ml",
+    "price": 1700,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FFE4B5/000000?text=바나나우유"
+  },
+  "8": {
+    "name": "비타500 100ml",
+    "price": 1000,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FFD700/000000?text=비타500"
+  },
+  "9": {
+    "name": "컨디션 100ml",
+    "price": 5000,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FF6347/FFFFFF?text=컨디션"
+  },
+  "10": {
+    "name": "하늘보리 500ml",
+    "price": 1800,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/DEB887/000000?text=하늘보리"
+  },
+  "11": {
+    "name": "포카리스웨트 500ml",
+    "price": 2300,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/87CEFA/000000?text=포카리"
+  },
+  "12": {
+    "name": "몬스터 에너지 355ml",
+    "price": 2300,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/228B22/FFFFFF?text=몬스터"
+  },
+  "13": {
+    "name": "포카칩 오리지널",
+    "price": 1700,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FFD700/000000?text=포카칩"
+  },
+  "14": {
+    "name": "꼬깔콘 고소한맛",
+    "price": 1700,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/DAA520/000000?text=꼬깔콘"
+  },
+  "15": {
+    "name": "허니버터칩",
+    "price": 1700,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FFE4B5/000000?text=허니버터칩"
+  },
+  "16": {
+    "name": "새우깡",
+    "price": 1500,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FF6347/FFFFFF?text=새우깡"
+  },
+  "17": {
+    "name": "프링글스 오리지널",
+    "price": 3700,
+    "stock": 10,
+    "image": "https://pngimg.com/uploads/pringles/pringles_PNG11.png"
+  },
+  "18": {
+    "name": "오레오 화이트쿠키",
+    "price": 1500,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/000080/FFFFFF?text=오레오"
+  },
+  "19": {
+    "name": "홈런볼 초코",
+    "price": 1700,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/8B4513/FFFFFF?text=홈런볼"
+  },
+  "20": {
+    "name": "맛동산",
+    "price": 2500,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FFD700/000000?text=맛동산"
+  },
+  "21": {
+    "name": "하리보 골드베렌",
+    "price": 1500,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FF69B4/FFFFFF?text=하리보"
+  },
+  "22": {
+    "name": "가나 마일드 초콜릿",
+    "price": 1200,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/8B4513/FFFFFF?text=가나"
+  },
+  "23": {
+    "name": "자유시간 싱글",
+    "price": 1000,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/F5DEB3/000000?text=자유시간"
+  },
+  "24": {
+    "name": "로아커 웨하스",
+    "price": 1500,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/D2691E/FFFFFF?text=로아커"
+  },
+  "25": {
+    "name": "참치마요 삼각김밥",
+    "price": 1100,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/000000/FFFFFF?text=참치마요"
+  },
+  "26": {
+    "name": "전주비빔 삼각김밥",
+    "price": 1100,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/8B0000/FFFFFF?text=전주비빔"
+  },
+  "27": {
+    "name": "불고기버거",
+    "price": 2800,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/D2691E/FFFFFF?text=불고기버거"
+  },
+  "28": {
+    "name": "에그샐러드 샌드위치",
+    "price": 2500,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FFFFE0/000000?text=에그샐러드"
+  },
+  "29": {
+    "name": "의성마늘프랑크",
+    "price": 2500,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/D2691E/FFFFFF?text=마늘프랑크"
+  },
+  "30": {
+    "name": "숯불바베큐바",
+    "price": 2200,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/8B4513/FFFFFF?text=바베큐바"
+  },
+  "31": {
+    "name": "신라면 소컵",
+    "price": 1150,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/DC143C/FFFFFF?text=신라면"
+  },
+  "32": {
+    "name": "육개장 사발면",
+    "price": 1000,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FF4500/FFFFFF?text=육개장"
+  },
+  "33": {
+    "name": "불닭볶음면 컵",
+    "price": 1800,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FF0000/FFFFFF?text=불닭볶음면"
+  },
+  "34": {
+    "name": "연세우유 생크림빵",
+    "price": 2700,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/F5F5DC/000000?text=생크림빵"
+  },
+  "35": {
+    "name": "자이언트 떡볶이",
+    "price": 2800,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FF6347/FFFFFF?text=떡볶이"
+  },
+  "36": {
+    "name": "햇반 210g",
+    "price": 2100,
+    "stock": 10,
+    "image": "https://via.placeholder.com/300x400.png/FFFFFF/000000?text=햇반"
+  },
+  "default": {
+    "name": "준비중",
+    "price": 0,
+    "stock": 0,
+    "image": "https://via.placeholder.com/300x400.png/808080/FFFFFF?text=준비중"
+  }
 }
