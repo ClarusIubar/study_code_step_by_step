@@ -1,7 +1,5 @@
 {
-  "1": {"name": "콜라", "image": "https://img.icons8.com/color/100/cola.png"},
-  "2": {"name": "사이다", "image": "https://img.icons8.com/color/100/sprite.png"},
-  "3": {"name": "오렌지주스", "image": "https://img.icons8.com/color/100/orange-juice.png"},
-  "4": {"name": "커피", "image": "https://img.icons8.com/color/100/coffee-go.png"},
-  "default": {"name": "음료", "image": "https://img.icons8.com/color/100/beverage.png"}
+  "1": {"name": "콜라", "price": 1500, "stock": 10, "image": "https://img.icons8.com/color/144/coca-cola.png"},
+  "2": {"name": "사이다", "price": 1400, "stock": 10, "image": "https://img.icons8.com/color/144/sprite.png"},
+  "default": {"name": "준비중", "price": 1000, "stock": 10, "image": "https://img.icons8.com/color/144/beverage.png"}
 }
