@@ -5,105 +5,136 @@
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <style>
-        .container { display: flex; gap: 20px; padding: 20px; font-family: sans-serif; }
-        .box { border: 2px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .grid-6x6 { flex: 1.5; display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; border: 2px solid #333; padding: 10px; }
-        .grid-item { border: 1px solid #ddd; padding: 10px 2px; text-align: center; font-size: 11px; color: #888; }
+        .container { display: flex; gap: 20px; padding: 20px; font-family: sans-serif; max-width: 1400px; margin: 0 auto; }
+        .box { border: 2px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: white; }
+        .grid-6x6 { flex: 1.5; display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; border: 3px solid #333; padding: 15px; background: #eee; }
+        .grid-item { border: 1px solid #ccc; text-align: center; font-size: 11px; background: #fff; padding: 10px; border-radius: 5px; }
+        .grid-item img { width: 100%; height: auto; max-height: 80px; object-fit: contain; }
         .side-panel { flex: 1; display: flex; flex-direction: column; }
-        
-        /* 결제 시스템 영역 (추후 추가를 위해 비워둠) */
-        .payment-placeholder { height: 100px; margin-bottom: 15px; border: 1px dashed #bbb; display: flex; align-items: center; justify-content: center; color: #999; }
-
-        .input-group { display: flex; gap: 10px; margin-top: 5px; }
-        #code-input { width: 80px; padding: 10px; font-size: 1.2rem; border: 2px solid #007bff; border-radius: 4px; }
-        #confirm-btn { padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; }
-        
-        .output-slot { height: 100px; background: #333; border: 5px inset #222; display: flex; align-items: center; justify-content: center; color: #FFD700; font-weight: bold; font-size: 1.5rem; }
-        #display-log { background: #222; color: #0f0; padding: 15px; margin-top: 10px; border-radius: 5px; font-family: monospace; }
+        .memo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
+        .memo-sticker { aspect-ratio: 1/1; background: #fff9c4; border: 1px solid #fbc02d; padding: 5px; font-size: 10px; box-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .payment-space { height: 80px; border: 2px dashed #007bff; display: flex; align-items: center; justify-content: center; background: #f0f7ff; color: #007bff; font-weight: bold; margin-bottom: 10px; border-radius: 5px; }
+        .output-slot { height: 200px; background: #222; border: 8px inset #444; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FFD700; border-radius: 10px; }
+        #out-img { height: 130px; display: none; }
+        #display-log { background: #1a1a1a; color: #0f0; padding: 15px; border-radius: 5px; font-family: monospace; margin: 20px; }
     </style>
     <py-config>
         [[fetch]]
-        files = ["logic.py"]
+        files = ["logic.py", "memo.py", "products.json"]
     </py-config>
 </head>
 <body>
 
 <div class="container">
     <div id="product-grid" class="grid-6x6"></div>
-
     <div class="side-panel">
         <div class="box">
-            <h3>건의함</h3>
-            <input type="text" id="wish-input" placeholder="추가 요청">
-            <button id="wish-btn">등록</button>
+            <h3>1. 건의함 메모</h3>
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <input type="number" id="memo-id" placeholder="ID" style="width:50px;">
+                <input type="text" id="memo-title" placeholder="내용" style="flex:1;">
+            </div>
+            <div style="display:flex; gap:5px;">
+                <button id="m-create">생성</button>
+                <button id="m-update">수정</button>
+                <button id="m-delete">삭제</button>
+            </div>
+            <div id="memo-grid" class="memo-grid"></div>
         </div>
 
         <div class="box">
-            <h3>제품 번호 입력 (1~36)</h3>
-            <div class="input-group">
-                <input type="text" id="code-input" placeholder="00">
-                <button id="confirm-btn">결정</button>
+            <h3>2. 제품 번호 입력</h3>
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="code-input" placeholder="00" style="width:70px; font-size:18px;">
+                <button id="confirm-btn" style="flex:1; background:#007bff; color:white; border:none; cursor:pointer;">번호 결정</button>
             </div>
         </div>
 
-        <div class="payment-placeholder">결제 시스템 모듈 대기 중</div>
+        <div class="box">
+            <h3>3. 결제 시스템</h3>
+            <div class="payment-space">결제 모듈 대기 중</div>
+        </div>
 
         <div class="box">
-            <h3>상품 토출구 (Output)</h3>
-            <div id="product-out" class="output-slot">EMPTY</div>
+            <h3>4. 상품 토출구</h3>
+            <div id="product-out" class="output-slot">
+                <img id="out-img" src="">
+                <span id="out-text" style="margin-top:10px;">EMPTY</span>
+            </div>
         </div>
     </div>
 </div>
 
-<div id="display-log">> 시스템 로딩 중...</div>
+<div id="display-log">> 시스템 대기 중...</div>
 
 <script type="py">
+    import json
     from logic import VendingMachine
+    from memo import MemoManager
     from pyscript import document
     from pyodide.ffi import create_proxy
 
-    vm = VendingMachine()
+    def start_app():
+        # 파일 읽기 시도
+        try:
+            with open("products.json", "r", encoding="utf-8") as f:
+                raw_data = f.read()
+        except:
+            raw_data = ""
 
-    # 좌측 그리드 시각화
-    grid_div = document.querySelector("#product-grid")
-    for i in range(1, 37):
-        div = document.createElement("div")
-        div.className = "grid-item"
-        div.innerText = f"{i}\n상품-{i:02d}"
-        grid_div.appendChild(div)
+        vm = VendingMachine(raw_data)
+        mm = MemoManager()
 
-    # 결정 버튼 클릭 처리 함수
-    def handle_confirm(event):
-        input_el = document.querySelector("#code-input")
-        val = input_el.value
-        
-        # Process
-        item, status = vm.get_product(val)
-        
-        # Output
-        document.querySelector("#display-log").innerText = f"> {status}"
-        slot = document.querySelector("#product-out")
-        
-        if item:
-            slot.innerText = item
-            input_el.value = ""
-        else:
-            slot.innerText = "EMPTY"
+        def refresh_memos():
+            g = document.querySelector("#memo-grid")
+            g.innerHTML = ""
+            for mid, title in mm.read_memos().items():
+                div = document.createElement("div")
+                div.className = "memo-sticker"
+                div.innerHTML = f"<b>{mid}</b><br>{title}"
+                g.appendChild(div)
 
-    def handle_wish(event):
-        wish_el = document.querySelector("#wish-input")
-        if wish_el.value.strip():
-            document.querySelector("#display-log").innerText = f"> 건의 접수: {wish_el.value}"
-            wish_el.value = ""
+        # UI 초기화
+        p_grid = document.querySelector("#product-grid")
+        for code, data in vm.products.items():
+            div = document.createElement("div")
+            div.className = "grid-item"
+            div.innerHTML = f"<img src='{data.get('image','')}'> <br><b>{code}</b>"
+            p_grid.appendChild(div)
+        refresh_memos()
 
-    # [핵심] 버튼에 이벤트 리스너 직접 연결 (undefined 'call' 에러 원천 차단)
-    confirm_btn = document.querySelector("#confirm-btn")
-    confirm_btn.addEventListener("click", create_proxy(handle_confirm))
+        def handle_confirm(e):
+            val = document.querySelector("#code-input").value
+            item, status = vm.get_product(val)
+            document.querySelector("#display-log").innerText = f"> {status}"
+            img_el = document.querySelector("#out-img")
+            txt_el = document.querySelector("#out-text")
+            if item:
+                img_el.src = item["image"]
+                img_el.style.display = "block"
+                txt_el.innerText = item["name"]
+            else:
+                img_el.style.display = "none"
+                txt_el.innerText = "EMPTY"
 
-    wish_btn = document.querySelector("#wish-btn")
-    wish_btn.addEventListener("click", create_proxy(handle_wish))
+        def handle_memo(op):
+            try:
+                mid = int(document.querySelector("#memo-id").value)
+                title = document.querySelector("#memo-title").value
+                if op == "C": mm.create_memo(mid, title)
+                elif op == "U": mm.update_memo(mid, title)
+                elif op == "D": mm.delete_memo(mid)
+                refresh_memos()
+            except: pass
 
-    document.querySelector("#display-log").innerText = "> 준비 완료. 번호를 입력하세요."
+        document.querySelector("#confirm-btn").onclick = create_proxy(handle_confirm)
+        document.querySelector("#m-create").onclick = create_proxy(lambda e: handle_memo("C"))
+        document.querySelector("#m-update").onclick = create_proxy(lambda e: handle_memo("U"))
+        document.querySelector("#m-delete").onclick = create_proxy(lambda e: handle_memo("D"))
+        document.querySelector("#display-log").innerText = "> 준비 완료."
+
+    # 실행
+    start_app()
 </script>
 </body>
 </html>
