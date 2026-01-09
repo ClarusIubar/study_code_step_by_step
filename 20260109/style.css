@@ -1,38 +1,45 @@
 body { margin: 0; background: #eee; font-family: sans-serif; overflow-y: scroll; }
 .container { display: flex; gap: 20px; padding: 20px; min-height: 100vh; padding-bottom: 120px; box-sizing: border-box; }
 
-/* 진열대 */
+/* 6x6 진열대 */
 .grid-6x6 { flex: 1.5; display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; border: 5px solid #333; padding: 15px; background: #fff; border-radius: 12px; height: fit-content; }
 .grid-item { border: 2px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; transition: 0.2s; opacity: 0.6; cursor: pointer; }
 .grid-item.on { border-color: #007bff; box-shadow: 0 0 10px rgba(0,123,255,0.4); opacity: 1; background: #f0f7ff; }
 .grid-item img { width: 50px; height: 50px; object-fit: contain; }
 
-/* 우측 패널 */
+/* 패널 공통 */
 .side-panel { flex: 1; display: flex; flex-direction: column; gap: 15px; }
 .box { border: 2px solid #444; padding: 15px; background: #fff; border-radius: 10px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
 h3 { margin-top: 0; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
 
-/* 메모함 */
+/* 메모 기능 */
 .memo-input-group { display: flex; gap: 5px; margin-bottom: 8px; }
-#memo-id { width: 50px; }
+#memo-id { width: 60px; }
 #memo-title { flex: 1; }
 .memo-buttons { display: flex; gap: 5px; margin-bottom: 10px; }
-.memo-buttons button { flex: 1; }
+.memo-buttons button { flex: 1; padding: 5px; cursor: pointer; }
 .memo-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
-.memo-sticker { aspect-ratio: 1/1; background: #fff9c4; border: 1px solid #fbc02d; padding: 5px; font-size: 11px; }
+.memo-sticker { 
+    aspect-ratio: 1/1; border: 1px solid #fbc02d; padding: 8px; font-size: 11px; 
+    cursor: pointer; transition: transform 0.1s; display: flex; flex-direction: column;
+}
+.memo-sticker:hover { transform: scale(1.03); background: #fffde7 !important; }
 
-/* 입력창 및 버튼 */
+/* 결제 및 버튼 */
 .large-input { width: 100%; font-size: 24px; text-align: center; margin-bottom: 10px; box-sizing: border-box; }
-.full-button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-.payment-box { border-color: #007bff; background: #f8fbff; }
+.full-button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
 .display-screen { background: #111; color: #0f0; padding: 15px; text-align: right; font-family: monospace; font-size: 26px; border-radius: 5px; margin-bottom: 10px; }
 .payment-buttons { display: flex; gap: 5px; }
-.payment-buttons button { flex: 1; padding: 8px; }
+.payment-buttons button { flex: 1; padding: 8px; cursor: pointer; }
 .danger-button { background: #ff4444; color: white; border: none; }
 
 /* 토출구 */
-.output-slot { min-height: 180px; background: #111; border: 8px inset #333; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
-#out-img { max-height: 100px; display: none; margin-bottom: 15px; }
-#take-btn { display: none; background: #28a745; color: white; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+.output-slot { min-height: 200px; background: #111; border: 8px inset #333; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
+.stacked-items { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.stacked-items img { height: 60px; filter: drop-shadow(0 0 5px #fff); }
+.take-action-btn { 
+    display: none; margin-top: 15px; background: #28a745; color: white; 
+    border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; 
+}
 
-.status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #222; color: #0f0; padding: 8px 20px; font-family: monospace; font-size: 14px; z-index: 100; }
+.status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #222; color: #0f0; padding: 8px 20px; font-family: monospace; z-index: 1000; }

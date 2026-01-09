@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Vending Machine System</title>
+    <title>Vending Machine System v2.0</title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <link rel="stylesheet" href="style.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
@@ -17,9 +17,9 @@
 
         <div class="side-panel">
             <div class="box">
-                <h3>1. 건의함 메모</h3>
+                <h3>1. 건의함 메모 (클릭하여 선택)</h3>
                 <div class="memo-input-group">
-                    <input type="number" id="memo-id" placeholder="ID">
+                    <input type="number" id="memo-id" placeholder="ID" min="1">
                     <input type="text" id="memo-title" placeholder="내용을 입력하세요">
                 </div>
                 <div class="memo-buttons">
@@ -49,8 +49,8 @@
             <div class="box">
                 <h3>4. 상품 토출구 (수령 전까지 유지)</h3>
                 <div id="product-out" class="output-slot">
-                    <div id="product-list" style="display:flex; flex-wrap:wrap; justify-content:center;"></div>
-                    <button id="take-btn" style="margin-top:15px; background:#28a745; color:white; border:none; padding:10px 25px; font-weight:bold; border-radius:5px; cursor:pointer;">상품 수령 및 종료</button>
+                    <div id="product-list" class="stacked-items"></div>
+                    <button id="take-btn" class="take-action-btn">상품 수령 및 종료</button>
                 </div>
             </div>
         </div>
