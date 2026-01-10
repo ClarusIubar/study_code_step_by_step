@@ -2,8 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>통합 자판기 시스템 - v16.0</title>
-    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <title>하이테크 통합 자판기 - v28.0</title>
     <link rel="stylesheet" href="style.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <py-config>
@@ -17,42 +16,67 @@
 <body>
     <div class="container">
         <div id="product-grid" class="grid-6x6"></div>
+
         <div class="side-panel">
             <div class="box">
                 <h3>1. 건의함 메모 (1~9번)</h3>
-                <div class="memo-input-group">
-                    <input type="number" id="memo-id" min="1" max="9" placeholder="ID">
-                    <input type="text" id="memo-title" placeholder="내용 입력">
+                <div class="memo-input-group" style="display: flex; gap: 5px; margin-bottom: 5px;">
+                    <input type="number" id="memo-id" min="1" max="9" placeholder="ID" style="width: 40px;">
+                    <input type="text" id="memo-title" placeholder="내용 입력" style="flex: 1;">
                 </div>
-                <div class="memo-buttons">
-                    <button id="m-create">생성</button><button id="m-update">수정</button>
+                <div class="memo-buttons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 8px;">
+                    <button id="m-create">생성</button>
+                    <button id="m-update">수정</button>
                     <button id="m-delete" class="danger-button">삭제</button>
                 </div>
                 <div id="memo-grid" class="memo-container"></div>
             </div>
+
             <div class="box">
                 <h3>2. 제품 번호 입력</h3>
                 <input type="text" id="code-input" placeholder="00" class="large-input" maxlength="2">
-                <button id="confirm-btn" class="full-button">번호 결정</button>
-            </div>
-            <div class="box payment-box">
-                <h3>3. 결제 시스템</h3>
-                <div id="balance-display" class="display-screen">0원</div>
-                <div class="payment-buttons">
-                    <button id="cash-btn">1,000원 투입</button>
-                    <button id="card-btn">카드 태그</button> <button id="return-btn" class="danger-button">반환</button>
+                <div class="keypad-grid">
+                    <button class="key-btn" data-val="1">1</button>
+                    <button class="key-btn" data-val="2">2</button>
+                    <button class="key-btn" data-val="3">3</button>
+                    <button class="key-btn" data-val="4">4</button>
+                    <button class="key-btn" data-val="5">5</button>
+                    <button class="key-btn" data-val="6">6</button>
+                    <button class="key-btn" data-val="7">7</button>
+                    <button class="key-btn" data-val="8">8</button>
+                    <button class="key-btn" data-val="9">9</button>
+                    <button class="key-btn cancel" id="key-clr">CLR</button>
+                    <button class="key-btn" data-val="0">0</button>
+                    <button class="key-btn confirm" id="confirm-btn">결정</button>
                 </div>
             </div>
+
+            <div class="box">
+                <h3>3. 결제 시스템</h3>
+                <div id="balance-display" class="display-screen">0원</div>
+                <div class="cash-group">
+                    <button class="btn-cash" data-amt="1000">1,000원</button>
+                    <button class="btn-cash" data-amt="5000">5,000원</button>
+                    <button class="btn-cash" data-amt="10000">10,000원</button>
+                </div>
+                <div class="util-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                    <button id="card-btn" class="btn-card">카드 태그</button>
+                    <button id="return-btn" class="btn-return">반환</button>
+                </div>
+            </div>
+
             <div class="box">
                 <h3>4. 상품 토출구</h3>
-                <div id="product-out" class="output-slot">
+                <div class="output-slot">
                     <div id="product-list" class="stacked-items"></div>
-                    <button id="take-btn" class="take-action-btn">수령 및 종료</button>
+                    <button id="take-btn" class="take-action-btn" style="width: 100%;">상품 수령 및 종료</button>
                 </div>
             </div>
         </div>
     </div>
-    <div id="log-bar" class="status-bar">> 시스템 준비 완료</div>
+    
+    <div id="log-bar" class="status-bar">> 시스템 가동 준비 완료</div>
+
     <script type="py">
         import asyncio
         from app.client import init_system
