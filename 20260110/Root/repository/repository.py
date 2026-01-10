@@ -28,14 +28,13 @@ class SmartQuerySet(Generic[T]):
     def __getitem__(self, idx): return self._items[idx]
 
 class VMRepository:
-    """[Command/Storage] 타입 기반 CQRS 저장소 (런타임 O(1) 보장)"""
-    STORAGE_KEY = "UKJAE_VM_CQRS_DATA_V53"
+    """[Command/Storage] 타입 기반 CQRS 저장소"""
+    STORAGE_KEY = "UKJAE_VM_FINAL_V58"
 
     def __init__(self):
         self._storage: Dict[Type[StandardModel], Dict[int, Any]] = {}
 
     def _to_dict(self, obj: Any) -> Dict[str, Any]:
-        """[결합도 완화] Pydantic 표준 메서드 활용"""
         if hasattr(obj, "model_dump"): return obj.model_dump()
         return obj.dict() if hasattr(obj, "dict") else {}
 
@@ -45,7 +44,6 @@ class VMRepository:
         self._storage[t][item.id] = item
 
     def find_by_id(self, cls: Type[T], item_id: int) -> T:
-        """[O(1)] 맵 구조를 통한 고속 조회"""
         return self._storage.get(cls, {}).get(item_id)
 
     def get_all(self, cls: Type[T]) -> List[T]:

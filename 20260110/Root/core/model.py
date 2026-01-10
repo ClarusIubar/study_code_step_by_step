@@ -19,15 +19,11 @@ def get_structure_tag(v: Any) -> str:
     return "single"
 
 class StandardModel(BaseModel):
-    class Config:
-        validate_assignment = True
-        extra = "allow"
-    
     model_config = {"validate_assignment": True, "extra": "allow"}
 
     @classmethod
     def from_auto(cls: Type[T], data: Any) -> Union[T, List[T], Dict[str, T]]:
-        """[수정] 맵 구조 로딩 시 파이썬 루프 오버헤드를 제거한 네이티브 파싱"""
+        """맵 구조 로딩 시 루프 오버헤드를 제거한 네이티브 파싱"""
         tag = get_structure_tag(data)
         if tag == "map":
             if HAS_V2:
