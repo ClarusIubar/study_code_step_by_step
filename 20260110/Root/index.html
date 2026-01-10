@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>하이테크 통합 자판기 - v29.0</title>
+    <title>하이테크 통합 자판기 - v38.0</title>
     <link rel="stylesheet" href="style.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <py-config>
@@ -15,7 +15,12 @@
 </head>
 <body>
     <div class="container">
-        <div id="product-grid" class="grid-6x6"></div>
+        <div class="main-view" style="flex: 1.5; display: flex; flex-direction: column;">
+            <div id="product-grid" class="grid-6x6"></div>
+            <div class="nav-bar" style="margin-top: 20px;">
+                <button onclick="location.href='admin.html'" style="padding: 12px 25px; background: #333; color: #ffc107; border: 2px solid #ffc107; border-radius: 6px; cursor: pointer; font-weight: bold;">⚙️ 관리자 모드(기기 뒷면) 접속</button>
+            </div>
+        </div>
 
         <div class="side-panel">
             <div class="box memo-box">
@@ -61,12 +66,6 @@
                     <div id="product-list" class="stacked-items"></div>
                     <button id="take-btn" class="take-action-btn" style="width: 100%;">상품 수령 및 종료</button>
                 </div>
-            </div>
-
-            <div class="box" style="border-style: dashed; background: #f8f9fa; margin-top: 10px;">
-                <button onclick="location.href='admin.html'" style="width: 100%; padding: 12px; cursor: pointer; background: #444; color: #fff; border: none; border-radius: 4px; font-weight: bold;">
-                    ⚙️ 관리자 모드(기기 뒷면) 접속
-                </button>
             </div>
         </div>
     </div>

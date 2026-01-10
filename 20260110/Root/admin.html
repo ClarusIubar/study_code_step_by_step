@@ -8,43 +8,43 @@
     <py-config>
         packages = ["pydantic"]
         [[fetch]]
-        # core/model.py가 반드시 포함되어야 StandardModel을 해석할 수 있습니다.
-        files = ["core/model.py", "domain/product.py", "repository/repository.py", 
-                "service/vendingmachine.py", "app/admin.py", "products.json"]
+        files = ["core/model.py", "domain/product.py", "domain/memo.py", 
+                 "repository/repository.py", "service/vendingmachine.py", 
+                 "app/admin.py", "products.json"]
     </py-config>
     <style>
-        /* 뒷면 전용 스타일: 어두운 금속 느낌 */
-        .admin-grid { background: #444 !important; border-color: #222 !important; }
-        .admin-item { background: #555; color: white; border: 1px dashed #777; padding: 5px; text-align: center; }
-        .refill-btn { margin-top: 5px; width: 100%; background: #ffc107; border: none; cursor: pointer; font-weight: bold; }
+        .admin-grid { background: #444 !important; border-color: #222 !important; height: fit-content !important; }
+        .admin-item { background: #555; color: white; border: 1px dashed #777; padding: 10px; text-align: center; }
+        .refill-btn { margin-top: 8px; width: 100%; background: #ffc107; border: none; cursor: pointer; font-weight: bold; padding: 5px; border-radius: 3px; }
+        .full-button { width: 100%; padding: 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="container" style="background: #333; color: #fff;">
         <div class="main-view" style="flex: 2;">
-            <h2 style="color: #ffc107; border-bottom: 2px solid #ffc107;">자판기 뒷면 (재고 관리 시스템)</h2>
+            <h2 style="color: #ffc107; border-bottom: 2px solid #ffc107; padding-bottom: 10px;">자판기 뒷면 (재고 관리 시스템)</h2>
             <div id="admin-grid" class="grid-6x6 admin-grid"></div>
             
             <div class="nav-bar" style="margin-top: 20px;">
-                <button onclick="location.href='index.html'" style="padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">사용자 모드 전환 (앞면)</button>
+                <button onclick="location.href='index.html'" style="padding: 12px 25px; background: #007bff; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">사용자 모드 전환 (앞면)</button>
             </div>
         </div>
 
         <div class="side-panel">
             <div class="box" style="background: #444; color: #fff; border-color: #ffc107;">
                 <h3>매출 현황 및 회수</h3>
-                <div id="revenue-display" class="display-screen" style="color: #ffc107;">0원</div>
-                <button id="collect-btn" class="full-button" style="background: #28a745;">판매 수익금 전액 회수</button>
+                <div id="revenue-display" class="display-screen" style="color: #ffc107; font-size: 32px;">0원</div>
+                <button id="collect-btn" class="full-button" style="background: #28a745; color: #fff;">판매 수익금 전액 회수</button>
             </div>
             
             <div class="box" style="background: #444; color: #fff;">
                 <h3>관리자 안내</h3>
-                <p style="font-size: 12px; color: #ccc;">* 각 슬롯의 [보충] 버튼을 누르면 재고가 1개씩 추가됩니다. (최대 10개)</p>
-                <p style="font-size: 12px; color: #ccc;">* 수익금 회수 시 기기 내부 금고가 비워집니다.</p>
+                <p style="font-size: 12px; color: #ccc;">* 재고 보충(Max 10개) 및 수익금은 브라우저에 자동 저장됩니다.</p>
+                <p style="font-size: 12px; color: #ccc;">* [회수] 버튼 클릭 시 내부 금고가 비워집니다.</p>
             </div>
         </div>
     </div>
-    <div id="log-bar" class="status-bar" style="background: #000;">> 관리자 로그인 완료</div>
+    <div id="log-bar" class="status-bar" style="background: #000; border-top: 2px solid #ffc107;">> 관리자 로그인 완료</div>
     <script type="py" src="app/admin.py"></script>
 </body>
 </html>
