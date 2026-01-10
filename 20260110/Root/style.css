@@ -1,43 +1,53 @@
 body { margin: 0; background: #eee; font-family: sans-serif; overflow-y: scroll; }
-/* 최상단 이상한 글씨(설정값) 노출 차단 */
 py-config { display: none !important; }
 
-.container { display: flex; gap: 20px; padding: 20px; min-height: 100vh; padding-bottom: 160px; box-sizing: border-box; }
+/* 컨테이너: 좌우 높이 동기화를 위해 align-items: stretch 적용 */
+.container { 
+    display: flex; align-items: stretch; gap: 20px; padding: 20px; 
+    min-height: 100vh; padding-bottom: 160px; box-sizing: border-box; 
+}
 
 /* 6x6 상품 진열대 */
-.grid-6x6 { flex: 1.5; display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; border: 5px solid #333; padding: 15px; background: #fff; border-radius: 12px; height: fit-content; }
+.grid-6x6 { 
+    flex: 1.5; display: grid; grid-template-columns: repeat(6, 1fr); 
+    gap: 10px; border: 5px solid #333; padding: 15px; 
+    background: #fff; border-radius: 12px; height: fit-content; 
+}
 .grid-item { border: 2px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; transition: 0.2s; opacity: 0.6; cursor: pointer; }
 .grid-item.on { border-color: #007bff; box-shadow: 0 0 10px rgba(0,123,255,0.4); opacity: 1; background: #f0f7ff; }
 .grid-item img { width: 50px; height: 50px; object-fit: contain; }
 
-/* 패널 및 박스 */
+/* 사이드 패널: 부모 높이를 꽉 채우도록 설정 */
 .side-panel { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-.box { border: 2px solid #444; padding: 10px; background: #fff; border-radius: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
+
+/* 1번 메모 박스: flex: 1을 주어 남는 모든 공간을 차지하게 함 */
+.box.memo-box { flex: 1; display: flex; flex-direction: column; }
+.box { border: 2px solid #444; padding: 12px; background: #fff; border-radius: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
 h3 { margin-top: 0; font-size: 13px; border-bottom: 1px solid #eee; padding-bottom: 4px; color: #555; }
 
-/* 메모 기능: 1x9 압축 가로 배치 */
-.memo-container { display: grid; grid-template-columns: repeat(9, 1fr); gap: 2px; }
+/* 메모 기능: 1x9 압축 가로 배치 + 수직 확장 */
+.memo-container { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; flex: 1; }
 .memo-sticker { 
-    border: 1px solid #fbc02d; padding: 2px; font-size: 9px; 
+    border: 1px solid #fbc02d; padding: 5px; font-size: 12px; 
     cursor: text; display: flex; flex-direction: column;
-    min-height: 35px; overflow: hidden; text-align: center; border-radius: 2px;
+    min-height: 100px; /* 확장된 공간에 맞춰 높이 증가 */
+    background: #fafafa; border-radius: 4px; transition: 0.2s;
 }
 .memo-sticker:hover { background: #fffde7 !important; border-color: #f9a825; }
-/* 메모 ID 라벨 스타일 복원 */
-.memo-id-label { font-size: 9px; color: #777; font-weight: bold; border-bottom: 1px solid #f0f0f0; margin-bottom: 2px; background: rgba(0,0,0,0.03); }
+.memo-id-label { font-size: 10px; color: #777; font-weight: bold; border-bottom: 1px solid #f0f0f0; margin-bottom: 4px; padding-bottom: 2px; }
 
-/* 키패드 및 결제 그룹 */
+/* 숫자 키패드 및 결제부 (v25.0 규격 유지) */
 .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
 .key-btn { padding: 12px; font-size: 18px; font-weight: bold; background: #f8f9fa; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; }
 .key-btn.cancel { background: #ffebee; color: #d32f2f; }
 .key-btn.confirm { background: #007bff; color: white; font-size: 14px; }
 
 .cash-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 8px; }
-.btn-cash { padding: 10px; background: #e8f5e9; border: 1px solid #4caf50; font-weight: bold; cursor: pointer; font-size: 11px; }
+.btn-cash { padding: 10px; background: #e8f5e9; border: 1px solid #4caf50; font-weight: bold; cursor: pointer; font-size: 11px; border-radius: 4px; }
 .btn-card { padding: 12px; background: #fff3e0; border: 1px solid #ff9800; font-weight: bold; cursor: pointer; border-radius: 4px; }
 .btn-return { padding: 12px; background: #ffebee; border: 1px solid #f44336; color: #f44336; font-weight: bold; cursor: pointer; border-radius: 4px; }
 
-/* 디스플레이 및 대형 상태바 */
+/* 입력창 및 안내창 (v24.0 규격 준수) */
 .large-input { width: 100%; font-size: 26px; text-align: center; margin-bottom: 8px; box-sizing: border-box; border: 2px solid #333; background: #fafafa; }
 .display-screen { background: #111; color: #0f0; padding: 12px; text-align: right; font-family: monospace; font-size: 24px; border-radius: 5px; margin-bottom: 8px; }
 .status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #222; color: #0f0; padding: 15px 30px; font-family: monospace; z-index: 1000; font-size: 18px; font-weight: bold; border-top: 2px solid #444; }
@@ -45,5 +55,5 @@ h3 { margin-top: 0; font-size: 13px; border-bottom: 1px solid #eee; padding-bott
 /* 토출구 */
 .output-slot { min-height: 100px; background: #111; border: 6px inset #333; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; }
 .stacked-items { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
-.stacked-items img { height: 35px; filter: drop-shadow(0 0 2px #fff); }
+.stacked-items img { height: 40px; filter: drop-shadow(0 0 2px #fff); }
 .take-action-btn { display: none; margin-top: 8px; background: #28a745; color: white; border: none; padding: 8px 16px; font-weight: bold; cursor: pointer; border-radius: 4px; }
