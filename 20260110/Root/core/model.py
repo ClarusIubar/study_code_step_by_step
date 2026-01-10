@@ -25,23 +25,14 @@ class StandardModel(BaseModel):
     
     model_config = {"validate_assignment": True, "extra": "allow"}
 
-    def serialize(self) -> Dict[str, Any]:
-        """[수정] Pydantic 버전에 따른 호환 직렬화"""
-        if hasattr(self, "model_dump"):
-            return self.model_dump()
-        return self.dict()
-
     @classmethod
     def from_auto(cls: Type[T], data: Any) -> Union[T, List[T], Dict[str, T]]:
+        """[수정] 맵 구조 로딩 시 파이썬 루프 오버헤드를 제거한 네이티브 파싱"""
         tag = get_structure_tag(data)
         if tag == "map":
-            res = {}
-            for k, v in data.items():
-                if k == "default" or not k.isdigit(): continue
-                v_copy = v.copy() if isinstance(v, dict) else {}
-                v_copy["id"] = int(k)
-                res[k] = cls._parse(v_copy)
-            return res
+            if HAS_V2:
+                return TypeAdapter(Dict[str, cls]).validate_python(data)
+            return parse_obj_as(Dict[str, cls], data)
         return cls._parse(data, many=(tag == "list"))
 
     @classmethod

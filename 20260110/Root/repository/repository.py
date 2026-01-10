@@ -17,7 +17,6 @@ class SmartQuerySet(Generic[T]):
         return sorted(self._items, key=lambda x: x.id)
 
     def __getattr__(self, key: str) -> 'SmartQuerySet':
-        """속성 프로젝션: vm.products.name 호출 시 데이터 리스트 반환"""
         if not self._items: return SmartQuerySet()
         try:
             return SmartQuerySet([getattr(item, key) for item in self._items])
@@ -29,14 +28,14 @@ class SmartQuerySet(Generic[T]):
     def __getitem__(self, idx): return self._items[idx]
 
 class VMRepository:
-    """[Command/Storage] 타입 기반 CQRS 저장소 및 영속성 관리"""
-    STORAGE_KEY = "UKJAE_VM_CQRS_DATA_V49"
+    """[Command/Storage] 타입 기반 CQRS 저장소 (런타임 O(1) 보장)"""
+    STORAGE_KEY = "UKJAE_VM_CQRS_DATA_V53"
 
     def __init__(self):
         self._storage: Dict[Type[StandardModel], Dict[int, Any]] = {}
 
-    def _serialize(self, obj: Any) -> Dict[str, Any]:
-        """[결합도 완화] Pydantic 버전 호환 직렬화 유틸리티"""
+    def _to_dict(self, obj: Any) -> Dict[str, Any]:
+        """[결합도 완화] Pydantic 표준 메서드 활용"""
         if hasattr(obj, "model_dump"): return obj.model_dump()
         return obj.dict() if hasattr(obj, "dict") else {}
 
@@ -46,6 +45,7 @@ class VMRepository:
         self._storage[t][item.id] = item
 
     def find_by_id(self, cls: Type[T], item_id: int) -> T:
+        """[O(1)] 맵 구조를 통한 고속 조회"""
         return self._storage.get(cls, {}).get(item_id)
 
     def get_all(self, cls: Type[T]) -> List[T]:
@@ -55,7 +55,7 @@ class VMRepository:
         data = {
             "total_revenue": total_revenue,
             "entities": {
-                cls.__name__: {obj.id: self._serialize(obj) for obj in objs.values()}
+                cls.__name__: {obj.id: self._to_dict(obj) for obj in objs.values()}
                 for cls, objs in self._storage.items()
             }
         }

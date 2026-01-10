@@ -4,7 +4,6 @@ from domain.memo import Memo
 from repository.repository import VMRepository, SmartQuerySet
 
 class VendingMachineService:
-    """[Facade] 비즈니스 로직 및 명령 전송 통합 인터페이스"""
     def __init__(self, json_data: str):
         self.balance = 0
         self.total_revenue = 0
@@ -13,6 +12,7 @@ class VendingMachineService:
         self._setup(json_data)
 
     def _setup(self, json_data: str):
+        # 1. 초기 데이터 로드 (맵 구조 수용)
         try:
             items = Product.from_auto(json.loads(json_data))
             if isinstance(items, dict):
@@ -21,6 +21,7 @@ class VendingMachineService:
         
         for i in range(1, 10): self._repository.save(Memo(id=i, title=""))
 
+        # 2. 영속성 데이터 복구
         persisted = self._repository.load_persistence()
         if persisted:
             self.total_revenue = persisted.get("total_revenue", 0)
@@ -41,7 +42,7 @@ class VendingMachineService:
     def purchase(self, p_id: int):
         p = self._repository.find_by_id(Product, p_id)
         if not p: return None, "번호 오류"
-        if p.stock <= 0: return None, "품절된 상품"
+        if p.stock <= 0: return None, "품절 상품"
         if self.balance < p.price: return None, "잔액 부족"
         
         success, msg = p.process_sell(1)
@@ -69,16 +70,15 @@ class VendingMachineService:
         self._repository.persist(self.total_revenue)
 
     def insert_cash(self, amount: int):
-        if self.payment_locked == "CARD": return False, "카드 사용 중"
+        if self.payment_locked == "CARD": return False, "차단"
         self.balance += amount; self.payment_locked = "CASH"
-        return True, f"{amount}원 투입 성공"
+        return True, f"{amount}원 투입됨"
 
     def tag_card(self):
-        if self.payment_locked == "CASH": return False, "현금 사용 중"
+        if self.payment_locked == "CASH": return False, "차단"
         self.payment_locked = "CARD"; self.balance = 20000
         return True, "카드 인증 성공"
 
     def reset_system(self):
-        change = self.balance
-        self.balance = 0; self.payment_locked = None
+        change = self.balance; self.balance = 0; self.payment_locked = None
         return change
