@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>통합 자판기 시스템 - v16.0</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <py-config>
+        packages = ["pydantic"]
+        [[fetch]]
+        files = ["core/model.py", "domain/product.py", "domain/memo.py", 
+                 "repository/repository.py", "service/vendingmachine.py", 
+                 "app/client.py", "products.json"]
+    </py-config>
+</head>
+<body>
+    <div class="container">
+        <div id="product-grid" class="grid-6x6"></div>
+        <div class="side-panel">
+            <div class="box">
+                <h3>1. 건의함 메모 (1~9번)</h3>
+                <div class="memo-input-group">
+                    <input type="number" id="memo-id" min="1" max="9" placeholder="ID">
+                    <input type="text" id="memo-title" placeholder="내용 입력">
+                </div>
+                <div class="memo-buttons">
+                    <button id="m-create">생성</button><button id="m-update">수정</button>
+                    <button id="m-delete" class="danger-button">삭제</button>
+                </div>
+                <div id="memo-grid" class="memo-container"></div>
+            </div>
+            <div class="box">
+                <h3>2. 제품 번호 입력</h3>
+                <input type="text" id="code-input" placeholder="00" class="large-input" maxlength="2">
+                <button id="confirm-btn" class="full-button">번호 결정</button>
+            </div>
+            <div class="box payment-box">
+                <h3>3. 결제 시스템</h3>
+                <div id="balance-display" class="display-screen">0원</div>
+                <div class="payment-buttons">
+                    <button id="cash-btn">1,000원 투입</button>
+                    <button id="card-btn">카드 태그</button> <button id="return-btn" class="danger-button">반환</button>
+                </div>
+            </div>
+            <div class="box">
+                <h3>4. 상품 토출구</h3>
+                <div id="product-out" class="output-slot">
+                    <div id="product-list" class="stacked-items"></div>
+                    <button id="take-btn" class="take-action-btn">수령 및 종료</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="log-bar" class="status-bar">> 시스템 준비 완료</div>
+    <script type="py">
+        import asyncio
+        from app.client import init_system
+        asyncio.ensure_future(init_system())
+    </script>
+</body>
+</html>

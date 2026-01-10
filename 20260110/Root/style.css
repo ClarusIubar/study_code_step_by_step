@@ -1,0 +1,42 @@
+body { margin: 0; background: #eee; font-family: sans-serif; overflow-y: scroll; }
+.container { display: flex; gap: 20px; padding: 20px; min-height: 100vh; padding-bottom: 120px; box-sizing: border-box; }
+
+/* 6x6 진열대 */
+.grid-6x6 { flex: 1.5; display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; border: 5px solid #333; padding: 15px; background: #fff; border-radius: 12px; height: fit-content; }
+.grid-item { border: 2px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; transition: 0.2s; opacity: 0.6; cursor: pointer; }
+.grid-item.on { border-color: #007bff; box-shadow: 0 0 10px rgba(0,123,255,0.4); opacity: 1; background: #f0f7ff; }
+.grid-item img { width: 50px; height: 50px; object-fit: contain; }
+
+/* 패널 공통 */
+.side-panel { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.box { border: 2px solid #444; padding: 12px; background: #fff; border-radius: 10px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
+h3 { margin-top: 0; font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #555; }
+
+/* 메모 기능: 9개 한 줄 배치 */
+.memo-container { display: grid; grid-template-columns: repeat(9, 1fr); gap: 2px; }
+.memo-sticker { 
+    border: 1px solid #fbc02d; padding: 2px; font-size: 10px; 
+    cursor: text; transition: transform 0.1s; display: flex; flex-direction: column;
+    min-height: 35px; overflow: hidden; text-align: center;
+}
+.memo-sticker:hover { background: #fffde7 !important; border-color: #f9a825; }
+.memo-id-label { font-size: 9px; color: #999; border-bottom: 1px solid #eee; margin-bottom: 2px; }
+
+/* 결제 및 버튼 */
+.large-input { width: 100%; font-size: 24px; text-align: center; margin-bottom: 10px; box-sizing: border-box; border: 2px solid #ccc; }
+.full-button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.display-screen { background: #111; color: #0f0; padding: 15px; text-align: right; font-family: monospace; font-size: 26px; border-radius: 5px; margin-bottom: 10px; }
+.payment-buttons { display: flex; gap: 5px; }
+.payment-buttons button { flex: 1; padding: 10px; cursor: pointer; font-weight: bold; }
+.danger-button { background: #ff4444; color: white; border: none; }
+
+/* 토출구 */
+.output-slot { min-height: 120px; background: #111; border: 6px inset #333; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
+.stacked-items { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
+.stacked-items img { height: 40px; filter: drop-shadow(0 0 3px #fff); }
+.take-action-btn { 
+    display: none; margin-top: 10px; background: #28a745; color: white; 
+    border: none; padding: 8px 16px; font-weight: bold; cursor: pointer; border-radius: 5px; 
+}
+
+.status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #222; color: #0f0; padding: 8px 20px; font-family: monospace; z-index: 1000; font-size: 12px; }
