@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 모드 - 자판기 뒷면</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <py-config>
+        packages = ["pydantic"]
+        [[fetch]]
+        # core/model.py가 반드시 포함되어야 StandardModel을 해석할 수 있습니다.
+        files = ["core/model.py", "domain/product.py", "repository/repository.py", 
+                "service/vendingmachine.py", "app/admin.py", "products.json"]
+    </py-config>
+    <style>
+        /* 뒷면 전용 스타일: 어두운 금속 느낌 */
+        .admin-grid { background: #444 !important; border-color: #222 !important; }
+        .admin-item { background: #555; color: white; border: 1px dashed #777; padding: 5px; text-align: center; }
+        .refill-btn { margin-top: 5px; width: 100%; background: #ffc107; border: none; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container" style="background: #333; color: #fff;">
+        <div class="main-view" style="flex: 2;">
+            <h2 style="color: #ffc107; border-bottom: 2px solid #ffc107;">자판기 뒷면 (재고 관리 시스템)</h2>
+            <div id="admin-grid" class="grid-6x6 admin-grid"></div>
+            
+            <div class="nav-bar" style="margin-top: 20px;">
+                <button onclick="location.href='index.html'" style="padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">사용자 모드 전환 (앞면)</button>
+            </div>
+        </div>
+
+        <div class="side-panel">
+            <div class="box" style="background: #444; color: #fff; border-color: #ffc107;">
+                <h3>매출 현황 및 회수</h3>
+                <div id="revenue-display" class="display-screen" style="color: #ffc107;">0원</div>
+                <button id="collect-btn" class="full-button" style="background: #28a745;">판매 수익금 전액 회수</button>
+            </div>
+            
+            <div class="box" style="background: #444; color: #fff;">
+                <h3>관리자 안내</h3>
+                <p style="font-size: 12px; color: #ccc;">* 각 슬롯의 [보충] 버튼을 누르면 재고가 1개씩 추가됩니다. (최대 10개)</p>
+                <p style="font-size: 12px; color: #ccc;">* 수익금 회수 시 기기 내부 금고가 비워집니다.</p>
+            </div>
+        </div>
+    </div>
+    <div id="log-bar" class="status-bar" style="background: #000;">> 관리자 로그인 완료</div>
+    <script type="py" src="app/admin.py"></script>
+</body>
+</html>

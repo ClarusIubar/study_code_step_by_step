@@ -6,7 +6,8 @@ from repository.repository import InventoryRepository
 class VendingMachineService:
     def __init__(self, json_data: str):
         self.balance = 0
-        self.payment_locked = None # CASH, CARD, None
+        self.total_revenue = 0
+        self.payment_locked = None 
         self.products = InventoryRepository[Product]()
         self.memos = InventoryRepository[Memo]()
         self._init_memos()
@@ -46,7 +47,9 @@ class VendingMachineService:
         if self.balance < p.price: return None, "잔액 부족"
         
         success, msg = p.process_sell(1)
-        if success: self.balance -= p.price
+        if success: 
+            self.balance -= p.price
+            self.total_revenue += p.price # [추가] 매출액 누적
         return p, msg
 
     def reset_system(self):
@@ -55,3 +58,18 @@ class VendingMachineService:
         self.balance = 0
         self.payment_locked = None
         return change
+    
+
+    # [추가] 관리자 기능: 개별 보충
+    def refill_one(self, p_id: int):
+        p = self.products.find_by_id(p_id)
+        if not p: return False, "상품 없음"
+        if p.stock >= 10: return False, "이미 가득 찼습니다."
+        p.stock += 1
+        return True, f"{p.name} 보충 완료 (현재: {p.stock})"
+
+    # [추가] 관리자 기능: 수익금 회수
+    def collect_revenue(self):
+        amount = self.total_revenue
+        self.total_revenue = 0
+        return amount
